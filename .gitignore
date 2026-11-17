@@ -1,0 +1,13 @@
+# local backups
+_original/
+
+# tooling
+node_modules/
+.wrangler/
+package-lock.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
