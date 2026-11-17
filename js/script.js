@@ -180,22 +180,30 @@
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
 
-  /* ---------- active nav link on scroll ---------- */
-  var links = document.querySelectorAll('.nav-links a[href^="#"]');
-  var sections = ['top', 'lead', 'latest', 'opinion']
-    .map(function (id) { return document.getElementById(id); })
-    .filter(Boolean);
+  /* ---------- active nav link (click based) ----------
+     Several nav items point at the same anchor, so scroll-spy would light up
+     several at once. Highlight only the link the reader actually clicked. */
+  var links = document.querySelectorAll('.nav-links a');
 
-  if (links.length && sections.length) {
-    window.addEventListener('scroll', function () {
-      var pos = window.scrollY + 140;
-      var current = sections[0].id;
-      sections.forEach(function (sec) {
-        if (pos >= sec.offsetTop) current = sec.id;
-      });
-      links.forEach(function (link) {
-        link.classList.toggle('is-active', link.getAttribute('href') === '#' + current);
-      });
-    }, { passive: true });
-  }
+  links.forEach(function (link) {
+    link.addEventListener('click', function () {
+      links.forEach(function (l) { l.classList.remove('is-active'); });
+      link.classList.add('is-active');
+    });
+  });
+
+  /* ---------- document title per language ---------- */
+  var titles = {
+    bn: 'Gazitime — সংবাদ | News',
+    en: 'Gazitime — News from Bangladesh and the world'
+  };
+
+  var originalApplyLang = applyLang;
+  applyLang = function (lang) {
+    originalApplyLang(lang);
+    document.title = titles[lang] || titles.bn;
+  };
+
+  // re-apply immediately so the title matches the language already on screen
+  applyLang(document.body.classList.contains('lang-en') ? 'en' : 'bn');
 })();

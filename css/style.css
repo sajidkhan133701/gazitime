@@ -359,9 +359,12 @@ h4 {
 .ticker-track {
   overflow: hidden;
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  padding-left: 18px;
+  mask-image: linear-gradient(90deg, #000 0, #000 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 92%, transparent 100%);
 }
 
 .ticker-move {
@@ -1002,9 +1005,30 @@ h4 {
 }
 
 @media (max-width: 768px) {
+  .topbar-inner {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
   .topbar-left .edition,
   .topbar-left .sep {
     display: none;
+  }
+
+  .topbar-right {
+    min-width: 0;
+  }
+
+  /* keep only the language switch on small screens - the social icons made
+     the bar wider than the viewport and caused horizontal scrolling */
+  .topbar-right > a {
+    display: none;
+  }
+
+  .lang-switch {
+    margin-left: 0;
   }
 
   .nav-meta {
@@ -1098,6 +1122,26 @@ h4 {
 
   .subscribe-btn {
     display: none;
+  }
+}
+
+@media print {
+
+  .topbar,
+  .navbar,
+  .ticker,
+  .to-top,
+  .sidebar .newsletter {
+    display: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  body {
+    color: #000;
   }
 }
 
