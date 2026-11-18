@@ -4,11 +4,11 @@ import categories from '../data/categories.json';
 ---
 
 <footer class="footer">
-  <div class="wrap">
+  <div class="container">
     <div>
       <a class="logo" href="/">{site.name}</a>
-      <p style="margin:10px 0 0">{site.footerNote}</p>
-      <p style="margin:6px 0 0">
+      <p style="margin:10px 0 0;font-size:14.5px;color:#444">{site.footerNote}</p>
+      <p style="margin:8px 0 0">
         <a href={`mailto:${site.email}`} style="display:inline">{site.email}</a>
       </p>
     </div>
@@ -29,10 +29,10 @@ import categories from '../data/categories.json';
       <a href="/contact/">যোগাযোগ</a>
       <a href="/search/">খবর খুঁজুন</a>
     </div>
-  </div>
 
-  <div class="wrap bottom">
-    <span>{site.copyright}</span>
-    <span>ডিজাইন ও হোস্টিং: Cloudflare</span>
+    <div class="bottom">
+      <span>{site.copyright}</span>
+      <span>গোপনীয়তা নীতি · ব্যবহারের শর্তাবলী · বিজ্ঞাপন</span>
+    </div>
   </div>
 </footer>

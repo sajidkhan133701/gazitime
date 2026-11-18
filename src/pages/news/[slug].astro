@@ -13,12 +13,23 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-const related = (await getCollection('blog'))
-  .filter((p) => !p.data.draft && p.data.category === post.data.category && p.id !== post.id)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+const all = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const related = all
+  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
   .slice(0, 3);
 
+const relatedList = [
+  ...related,
+  ...all.filter((p) => p.id !== post.id && !related.some((r) => r.id === p.id)),
+].slice(0, 3);
+
+const latest = all.filter((p) => p.id !== post.id).slice(0, 5);
 const minutes = readingTime(post.body ?? '');
+const shareUrl = `https://gazitime.online/news/${post.id}/`;
+const shareTitle = encodeURIComponent(post.data.title);
 ---
 
 <Base
@@ -27,72 +38,101 @@ const minutes = readingTime(post.body ?? '');
   image={post.data.image ?? '/images/metro.jpg'}
   type="article"
 >
-  <div class="wrap">
-    <article class="article">
-      <nav class="breadcrumb">
-        <a href="/">প্রচ্ছদ</a> ›
-        <a href={`/category/${post.data.category}/`}>{catName(post.data.category)}</a>
-      </nav>
+  <div class="share-rail">
+    <a class="fb" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener" aria-label="ফেসবুক">f</a>
+    <a class="wa" href={`https://wa.me/?text=${shareTitle}%20${shareUrl}`} target="_blank" rel="noopener" aria-label="হোয়াটসঅ্যাপ">✆</a>
+    <a class="x" href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener" aria-label="এক্স">𝕏</a>
+    <a class="tg" href={`https://t.me/share/url?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener" aria-label="টেলিগ্রাম">✈</a>
+    <a class="print" href="#" onclick="window.print();return false;" aria-label="প্রিন্ট">⎙</a>
+  </div>
 
-      <span class="eyebrow">{catName(post.data.category)}</span>
-      <h1>{post.data.title}</h1>
-      {post.data.dek && <p class="dek">{post.data.dek}</p>}
+  <div class="container">
+    <div class="article-wrap">
+      <article class="article">
+        <nav class="breadcrumb">
+          <a href="/">হোম</a> › <a href={`/category/${post.data.category}/`}>{catName(post.data.category)}</a>
+        </nav>
 
-      <div class="byline">
-        <span>{post.data.author}</span>
-        <span>{bnDate(post.data.date)}</span>
-        <span>পড়তে লাগবে {minutes} মিনিট</span>
-      </div>
+        <span class="kicker">{catName(post.data.category)}</span>
+        <h1 class="article-title">{post.data.title}</h1>
+        {post.data.dek && <p class="article-dek">{post.data.dek}</p>}
 
-      {post.data.image && (
-        <figure>
-          <img
-            src={post.data.image}
-            alt={post.data.imageAlt ?? post.data.title}
-            width="760"
-            height="430"
-            loading="eager"
-          />
-          {post.data.imageAlt && <figcaption>{post.data.imageAlt}</figcaption>}
-        </figure>
-      )}
+        <div class="byline">
+          <span>{post.data.author}</span>
+          <span>{bnDate(post.data.date)}</span>
+          <span>পড়তে লাগবে {minutes} মিনিট</span>
+          <span class="socials">
+            <a class="fb" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener" aria-label="ফেসবুক">f</a>
+            <a class="wa" href={`https://wa.me/?text=${shareTitle}%20${shareUrl}`} target="_blank" rel="noopener" aria-label="হোয়াটসঅ্যাপ">✆</a>
+            <a class="x" href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener" aria-label="এক্স">𝕏</a>
+            <a class="tg" href={`https://t.me/share/url?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener" aria-label="টেলিগ্রাম">✈</a>
+          </span>
+        </div>
 
-      <div class="prose">
-        <Content />
-      </div>
+        {post.data.image && (
+          <figure>
+            <img
+              src={post.data.image}
+              alt={post.data.imageAlt ?? post.data.title}
+              width="709"
+              height="400"
+              loading="eager"
+            />
+            {post.data.imageAlt && <figcaption>{post.data.imageAlt}</figcaption>}
+          </figure>
+        )}
 
-      {post.data.tags.length > 0 && (
-        <div class="taglist">
-          {post.data.tags.map((t) => (
-            <a href={`/search/?q=${encodeURIComponent(t)}`}>#{t}</a>
+        <div class="prose">
+          <Content />
+        </div>
+
+        {post.data.tags.length > 0 && (
+          <div class="taglist">
+            {post.data.tags.map((t) => (
+              <a href={`/search/?q=${encodeURIComponent(t)}`}>#{t}</a>
+            ))}
+          </div>
+        )}
+      </article>
+
+      <aside class="rail">
+        <a class="ad-slot" href="/contact/" style="min-height:250px">
+          বিজ্ঞাপনের জন্য যোগাযোগ করুন
+          <small>৩০০ × ২৫০</small>
+        </a>
+
+        <div class="rail-box">
+          <div class="rail-head">সর্বশেষ খবর</div>
+          {latest.map((p) => (
+            <div class="rail-item">
+              <div>
+                <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
+                <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+              </div>
+              {p.data.image && <img src={p.data.image} alt="" width="171" height="82" loading="lazy" />}
+            </div>
           ))}
         </div>
-      )}
-    </article>
+      </aside>
+    </div>
 
-    {related.length > 0 && (
-      <section class="section" style="border-bottom:0">
+    {relatedList.length > 0 && (
+      <section class="section" style="border-top:1px solid var(--rule)">
         <div class="section-head">
-          <h2>একই সেকশনের আরও</h2>
-          <a class="more" href={`/category/${post.data.category}/`}>আরও →</a>
+          <h2>আরও পড়ুন</h2>
+          <span class="rule"></span>
+          <a class="more" href={`/category/${post.data.category}/`}>আরও ›</a>
         </div>
-        <div class="list-grid" style="padding-top:0">
-          {related.map((p) => (
-            <article class="card">
+        <div class="related-grid">
+          {relatedList.map((p) => (
+            <article>
               <a href={`/news/${p.id}/`}>
                 {p.data.image && (
-                  <img
-                    src={p.data.image}
-                    alt={p.data.imageAlt ?? p.data.title}
-                    width="400"
-                    height="260"
-                    loading="lazy"
-                    style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px"
-                  />
+                  <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="306" height="200" loading="lazy" />
                 )}
                 <h4>{p.data.title}</h4>
               </a>
-              <div class="meta">{bnDate(p.data.date)}</div>
+              <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
             </article>
           ))}
         </div>

@@ -17,7 +17,7 @@ const posts = (await getCollection('blog'))
 ---
 
 <Base title={name} description={`${name} — সর্বশেষ খবর ও বিশ্লেষণ`}>
-  <div class="wrap">
+  <div class="container">
     <header class="page-head">
       <h1>{name}</h1>
       <p>{posts.length}টি সংবাদ</p>
@@ -26,24 +26,23 @@ const posts = (await getCollection('blog'))
     {posts.length === 0 ? (
       <p style="padding:40px 0;color:#6b7280">এই সেকশনে এখনো কোনো খবর প্রকাশিত হয়নি।</p>
     ) : (
-      <div class="list-grid">
+      <div class="cards3" style="padding-bottom:30px">
         {posts.map((p) => (
-          <article class="card">
+          <article>
             <a href={`/news/${p.id}/`}>
               {p.data.image && (
                 <img
                   src={p.data.image}
                   alt={p.data.imageAlt ?? p.data.title}
                   width="400"
-                  height="260"
+                  height="300"
                   loading="lazy"
-                  style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px"
                 />
               )}
-              <h3>{p.data.title}</h3>
+              <h4>{p.data.title}</h4>
             </a>
-            {p.data.dek && <p class="dek">{p.data.dek}</p>}
-            <div class="meta">{p.data.author} · {bnDate(p.data.date)}</div>
+            {p.data.dek && <p style="font-size:14.5px;color:#555;margin:4px 0 0">{p.data.dek}</p>}
+            <div class="meta-row">{p.data.author} · {bnDate(p.data.date)}</div>
           </article>
         ))}
       </div>

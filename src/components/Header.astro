@@ -3,7 +3,7 @@ import site from '../data/site.json';
 import categories from '../data/categories.json';
 
 const path = Astro.url.pathname;
-const navItems = categories.slice(0, 9);
+const nav = categories;
 const today = new Intl.DateTimeFormat('bn-BD', {
   weekday: 'long',
   day: 'numeric',
@@ -12,46 +12,71 @@ const today = new Intl.DateTimeFormat('bn-BD', {
 }).format(new Date());
 ---
 
-<header>
-  <div class="topbar">
-    <div class="wrap">
-      <span class="topbar-date">{today}</span>
-      <nav class="topbar-links" aria-label="সহায়ক লিংক">
-        <a href="/about/">আমাদের সম্পর্কে</a>
-        <a href="/contact/">যোগাযোগ</a>
-        <a href={`mailto:${site.email}`}>বিজ্ঞাপন</a>
-      </nav>
+<div class="topbar">
+  <div class="container">
+    <span>{today}</span>
+    <nav class="topbar-links" aria-label="সহায়ক">
+      <a href="/about/">আমাদের সম্পর্কে</a>
+      <a href="/contact/">যোগাযোগ</a>
+      <a href={`mailto:${site.email}`}>বিজ্ঞাপন</a>
+    </nav>
+  </div>
+</div>
+
+<div class="brandrow">
+  <div class="container">
+    <div class="brand-side">
+      <a href="/about/" style="color:var(--muted)">ই-পেপার</a>
+      <span style="color:#c9c9c9"> | </span>
+      <a href="/category/special/" style="color:var(--muted)">আর্কাইভ</a>
+    </div>
+    <div class="brand-center">
+      <a class="logo" href="/">{site.name}<small>{site.tagline}</small></a>
+    </div>
+    <div class="brand-side right">
+      <a href={`mailto:${site.email}`} class="icon-btn" aria-label="ইমেইল">✉</a>
     </div>
   </div>
+</div>
 
-  <div class="masthead">
-    <div class="wrap">
-      <a class="logo" href="/">{site.name}</a>
-      <p class="tagline">{site.tagline}</p>
-
-      <div class="masthead-meta">
-        <span class="today">{today}</span>
-        <form class="search" role="search" action="/search/" method="get">
-          <input type="search" name="q" placeholder="খবর খুঁজুন…" aria-label="খবর খুঁজুন" />
-          <button type="submit" aria-label="খুঁজুন" style="border:0;background:none;padding:0;color:#6b7280">
-            ⌕
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <nav class="nav" aria-label="প্রধান মেনু">
-    <div class="wrap">
-      <a href="/" aria-current={path === '/' ? 'page' : undefined}>প্রচ্ছদ</a>
-      {navItems.map((c) => (
-        <a
-          href={`/category/${c.slug}/`}
-          aria-current={path.startsWith(`/category/${c.slug}`) ? 'page' : undefined}
-        >
+<nav class="nav" aria-label="প্রধান মেনু">
+  <div class="container">
+    <div class="nav-links">
+      <a href="/" aria-current={path === '/' ? 'page' : undefined}>হোম</a>
+      {nav.map((c) => (
+        <a href={`/category/${c.slug}/`} aria-current={path.startsWith(`/category/${c.slug}`) ? 'page' : undefined}>
           {c.name}
         </a>
       ))}
+      <a href="/search/">খবর খুঁজুন</a>
     </div>
-  </nav>
-</header>
+    <div class="nav-icons">
+      <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-bar">
+  <button class="icon-btn" aria-label="মেনু" id="mnav-btn">☰</button>
+  <a class="logo" href="/">{site.name}</a>
+  <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
+</div>
+
+<nav class="mobile-nav" id="mnav" aria-label="মোবাইল মেনু">
+  <a href="/" aria-current={path === '/' ? 'page' : undefined}>হোম</a>
+  {nav.map((c) => (
+    <a href={`/category/${c.slug}/`} aria-current={path.startsWith(`/category/${c.slug}`) ? 'page' : undefined}>
+      {c.name}
+    </a>
+  ))}
+</nav>
+
+<script>
+  const btn = document.getElementById('mnav-btn');
+  const nav = document.getElementById('mnav');
+  btn?.addEventListener('click', () => {
+    if (!nav) return;
+    const hidden = nav.style.display === 'none';
+    nav.style.display = hidden ? 'flex' : 'none';
+  });
+</script>

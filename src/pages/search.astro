@@ -19,18 +19,18 @@ const index = posts.map((p) => ({
 ---
 
 <Base title="খবর খুঁজুন">
-  <div class="wrap">
+  <div class="container">
     <header class="page-head">
       <h1>খবর খুঁজুন</h1>
       <p>শিরোনাম, সেকশন বা লেখার ভেতর থেকে খুঁজুন</p>
     </header>
 
-    <div style="padding:24px 0">
-      <form class="search" role="search" style="max-width:520px;min-width:0">
+    <div style="padding:20px 0 40px">
+      <form class="search-box" role="search" style="max-width:520px;border-radius:6px;padding:8px 14px">
         <input id="q" type="search" placeholder="যেমন: মেট্রোরেল, ক্রিকেট, বাজেট…" aria-label="খবর খুঁজুন" />
       </form>
       <p id="count" style="color:#6b7280;font-size:14px;margin-top:12px">সব খবর দেখানো হচ্ছে</p>
-      <div id="results" class="list-grid" style="padding-top:12px"></div>
+      <div id="results" class="cards3" style="padding-top:12px"></div>
     </div>
   </div>
 
@@ -44,13 +44,11 @@ const index = posts.map((p) => ({
     const count = document.getElementById('count');
 
     const item = (p) =>
-      `<article class="card"><a href="/news/${p.id}/">` +
-      (p.img
-        ? `<img src="${p.img}" alt="" width="400" height="260" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px">`
-        : '') +
-      `<h3>${p.title}</h3></a>` +
-      (p.dek ? `<p class="dek">${p.dek}</p>` : '') +
-      `<div class="meta">${p.cat} · ${p.date}</div></article>`;
+      '<article><a href="/news/' + p.id + '/">' +
+      (p.img ? '<img src="' + p.img + '" alt="" width="400" height="300" loading="lazy">' : '') +
+      '<h4>' + p.title + '</h4></a>' +
+      (p.dek ? '<p style="font-size:14.5px;color:#555;margin:4px 0 0">' + p.dek + '</p>' : '') +
+      '<div class="meta-row">' + p.cat + ' · ' + p.date + '</div></article>';
 
     const render = (term) => {
       const t = term.trim().toLowerCase();
@@ -61,7 +59,7 @@ const index = posts.map((p) => ({
         : data;
       out.innerHTML = hits.map(item).join('');
       count.textContent = t
-        ? `"${term}" — ${hits.length}টি খবর পাওয়া গেছে`
+        ? '"' + term + '" — ' + hits.length + 'টি খবর পাওয়া গেছে'
         : 'সব খবর দেখানো হচ্ছে';
     };
 

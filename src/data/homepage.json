@@ -1,46 +1,80 @@
 {
   "lead": "metro-rail-utsab",
-  "topList": [
+  "breaking": [
     "ruet-admission-date",
     "garment-wage-board",
-    "cricket-series-win",
-    "tech-startup-funding"
+    "cricket-series-win"
   ],
+  "heroCards": [
+    "dhaka-flood-drain",
+    "tech-startup-funding",
+    "film-festival-dhaka",
+    "football-league-final"
+  ],
+  "heroText": [
+    "eu-climate-summit",
+    "un-migration-report",
+    "remittance-record"
+  ],
+  "railVideo": "music-concert-winter",
   "opinion": [
     "opinion-digital-education",
     "opinion-urban-green",
     "opinion-remittance"
   ],
-  "blocks": [
-    {
-      "title": "জাতীয়",
-      "category": "national",
-      "items": []
-    },
+  "sections": [
     {
       "title": "আন্তর্জাতিক",
+      "layout": "split",
       "category": "international",
-      "items": []
+      "theme": ""
     },
     {
-      "title": "অর্থনীতি",
-      "category": "economy",
-      "items": []
-    },
-    {
-      "title": "প্রযুক্তি",
-      "category": "tech",
-      "items": []
+      "title": "নির্বাচিত",
+      "layout": "cards3",
+      "category": "",
+      "theme": "tint",
+      "items": [
+        "dhaka-flood-drain",
+        "film-festival-dhaka",
+        "ai-health-pilot"
+      ]
     },
     {
       "title": "খেলা",
+      "layout": "split",
       "category": "sports",
-      "items": []
+      "theme": ""
+    },
+    {
+      "title": "অর্থনীতি",
+      "layout": "split",
+      "category": "economy",
+      "theme": ""
     },
     {
       "title": "বিনোদন",
+      "layout": "cards3",
       "category": "entertainment",
-      "items": []
+      "theme": "pink"
+    },
+    {
+      "title": "প্রযুক্তি",
+      "layout": "cards4",
+      "category": "tech",
+      "theme": ""
+    },
+    {
+      "title": "শিক্ষা ও জীবনযাত্রা",
+      "layout": "cards3",
+      "category": "education",
+      "theme": "tint"
+    },
+    {
+      "title": "বিশেষ প্রতিবেদন",
+      "layout": "split",
+      "category": "special",
+      "theme": ""
     }
   ]
 }

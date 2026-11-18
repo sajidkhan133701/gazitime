@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import site from '../data/site.json';
 import homepage from '../data/homepage.json';
 import { bnDate, catName } from '../lib/utils';
 
@@ -10,129 +9,191 @@ const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const byId = new Map(posts.map((p) => [p.id, p]));
-
-/** CMS writes either "slug" or a repo path — normalise both to the post id */
 const norm = (v: string) => v.replace(/^.*\//, '').replace(/\.md$/, '');
 const pick = (v: string) => byId.get(norm(v));
 
 const lead = (homepage.lead ? pick(homepage.lead) : undefined) ?? posts[0];
-const side = (homepage.topList ?? []).map(pick).filter((p) => p && p.id !== lead?.id);
-const sideList = side.length ? side : posts.slice(1, 5);
+const breaking = (homepage.breaking ?? []).map(pick).filter((p) => p && p.id !== lead.id);
+const heroCards = (homepage.heroCards ?? []).map(pick).filter(Boolean).slice(0, 4);
+const heroText = (homepage.heroText ?? []).map(pick).filter(Boolean).slice(0, 3);
+const railVideo = homepage.railVideo ? pick(homepage.railVideo) : undefined;
+const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 3);
 
-const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean);
+const limits: Record<string, number> = { split: 5, cards3: 3, cards4: 4 };
 
-const blocks = (homepage.blocks ?? [])
-  .map((b) => {
-    const manual = (b.items ?? []).map(pick).filter(Boolean);
-    const auto = posts.filter((p) => p.data.category === b.category);
+const sections = (homepage.sections ?? [])
+  .map((s: any) => {
+    const manual = (s.items ?? []).map(pick).filter(Boolean);
+    const auto = s.category ? posts.filter((p) => p.data.category === s.category) : [];
     const merged = manual.length ? manual : auto;
     const unique = merged.filter((p, i, arr) => arr.findIndex((x) => x.id === p.id) === i);
-    return { ...b, items: unique.slice(0, 4) };
+    const limit = limits[s.layout] ?? 3;
+    // top up so every block looks full, like a printed page
+    const filled = [...unique];
+    for (const p of posts) {
+      if (filled.length >= limit) break;
+      if (!filled.some((x) => x.id === p.id)) filled.push(p);
+    }
+    return { ...s, items: filled.slice(0, limit) };
   })
-  .filter((b) => b.items.length > 0);
+  .filter((s) => s.items.length > 0);
 ---
 
 <Base>
-  <div class="wrap">
+  <div class="container">
     <div class="hero">
-      <article class="hero-lead">
-        <span class="eyebrow">
-          <a href={`/category/${lead.data.category}/`}>{catName(lead.data.category)}</a>
-        </span>
-        {lead.data.image && (
-          <a href={`/news/${lead.id}/`}>
-            <img
-              src={lead.data.image}
-              alt={lead.data.imageAlt ?? lead.data.title}
-              width="800"
-              height="450"
-              loading="eager"
-              style="margin-bottom:14px"
-            />
-          </a>
-        )}
-        <h1><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h1>
-        {lead.data.dek && <p class="dek">{lead.data.dek}</p>}
-        <div class="meta" style="font-size:12px;color:var(--muted)">
-          {lead.data.author} · {bnDate(lead.data.date)}
-        </div>
-      </article>
+      <div class="hero-main">
+        <div class="hero-top">
+          <article class="hero-lead">
+            <span class="kicker">প্রথম পাতা</span>
+            <h1 class="lead-title"><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h1>
+            {lead.data.dek && <p class="lead-dek">{lead.data.dek}</p>}
+            {lead.data.image && (
+              <a href={`/news/${lead.id}/`}>
+                <img
+                  class="lead-img"
+                  src={lead.data.image}
+                  alt={lead.data.imageAlt ?? lead.data.title}
+                  width="800"
+                  height="450"
+                  loading="eager"
+                />
+              </a>
+            )}
+          </article>
 
-      <aside class="hero-list">
-        <h2>সর্বশেষ</h2>
-        <ol>
-          {sideList.map((p) => (
-            <li>
-              <a href={`/news/${p.id}/`}>{p.data.title}</a>
-              <span class="time">{catName(p.data.category)} · {bnDate(p.data.date)}</span>
-            </li>
+          <aside class="breaking">
+            <h3>সর্বশেষ</h3>
+            <ul>
+              {breaking.map((p) => (
+                <li>
+                  <a href={`/news/${p.id}/`}>{p.data.title}</a>
+                  {p.data.image && (
+                    <img src={p.data.image} alt="" width="88" height="62" loading="lazy" />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+
+        <div class="cards4">
+          {heroCards.map((p) => (
+            <article>
+              <a href={`/news/${p.id}/`}>
+                {p.data.image && (
+                  <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="300" height="225" loading="lazy" />
+                )}
+                <h4>{p.data.title}</h4>
+              </a>
+            </article>
           ))}
-        </ol>
+        </div>
+
+        <div class="headlines3">
+          {heroText.map((p) => (
+            <article>
+              <a href={`/news/${p.id}/`}>{p.data.title}</a>
+              <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <aside class="hero-rail">
+        {railVideo && (
+          <div class="video-card">
+            <a href={`/news/${railVideo.id}/`} style="position:relative;display:block">
+              {railVideo.data.image && (
+                <img src={railVideo.data.image} alt={railVideo.data.imageAlt ?? railVideo.data.title} width="336" height="189" />
+              )}
+              <span class="play-badge"><span>▶</span></span>
+            </a>
+            <h4><a href={`/news/${railVideo.id}/`}>{railVideo.data.title}</a></h4>
+          </div>
+        )}
+        <a class="ad-slot" href="/contact/">
+          বিজ্ঞাপনের জন্য যোগাযোগ করুন
+          <small>৩০০ × ২৫০</small>
+        </a>
       </aside>
     </div>
   </div>
 
-  {blocks.map((b, idx) => (
-    <>
-      <section class="section">
-        <div class="wrap">
-          <div class="section-head">
-            <h2>{b.title}</h2>
-            <a class="more" href={`/category/${b.category}/`}>আরও →</a>
-          </div>
+  {opinion.length > 0 && (
+    <div class="opinion-strip">
+      <div class="container">
+        {opinion.map((p) => (
+          <a href={`/news/${p.id}/`}>
+            {p.data.title}
+            <span>{p.data.author}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
-          <div class="block-split">
-            <article class="big card">
-              <a href={`/news/${b.items[0].id}/`}>
-                {b.items[0].data.image && (
+  {sections.map((s) => (
+    <section class={`section ${s.theme ?? ''}`}>
+      <div class="container">
+        <div class="section-head">
+          <h2>{s.title}</h2>
+          <span class="rule"></span>
+          {s.category && <a class="more" href={`/category/${s.category}/`}>আরও ›</a>}
+        </div>
+
+        {s.layout === 'split' && (
+          <div class="split-1-3">
+            <article class="big-story">
+              <a href={`/news/${s.items[0].id}/`}>
+                {s.items[0].data.image && (
                   <img
-                    src={b.items[0].data.image}
-                    alt={b.items[0].data.imageAlt ?? b.items[0].data.title}
-                    width="720"
-                    height="450"
+                    src={s.items[0].data.image}
+                    alt={s.items[0].data.imageAlt ?? s.items[0].data.title}
+                    width="700"
+                    height="437"
                     loading="lazy"
                   />
                 )}
-                <h3>{b.items[0].data.title}</h3>
+                <h3>{s.items[0].data.title}</h3>
               </a>
-              {b.items[0].data.dek && <p class="dek">{b.items[0].data.dek}</p>}
+              {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
             </article>
 
-            <div class="block-list">
-              {b.items.slice(1).map((p) => (
+            <div class="list-thumbs">
+              {s.items.slice(1).map((p) => (
                 <article>
                   <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
-                  <div class="meta">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+                  <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
                 </article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        )}
 
-      {idx === 1 && opinion.length > 0 && (
-        <section class="section opinion-band">
-          <div class="wrap">
-            <div class="section-head">
-              <h2>মতামত</h2>
-              <a class="more" href="/category/opinion/">আরও →</a>
-            </div>
-            <div class="opinion-grid">
-              {opinion.map((p) => (
-                <a class="quote" href={`/news/${p.id}/`}>
-                  <p>{p.data.title}</p>
-                  <span class="by">{p.data.author}</span>
+        {(s.layout === 'cards3' || s.layout === 'cards4') && (
+          <div class={s.layout === 'cards3' ? 'cards3' : 'cards4'}>
+            {s.items.map((p) => (
+              <article>
+                <a href={`/news/${p.id}/`}>
+                  {p.data.image && (
+                    <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="400" height="300" loading="lazy" />
+                  )}
+                  <h4>{p.data.title}</h4>
                 </a>
-              ))}
-            </div>
+                {p.data.dek && s.layout === 'cards3' && (
+                  <p class="dek" style="font-size:14.5px;color:#555;margin:4px 0 0">{p.data.dek}</p>
+                )}
+              </article>
+            ))}
           </div>
-        </section>
-      )}
-    </>
+        )}
+      </div>
+    </section>
   ))}
 
   <section class="newsletter">
-    <div class="wrap">
+    <div class="container">
       <div>
         <h2>সাপ্তাহিক সংবাদপত্র</h2>
         <p>সপ্তাহের সেরা খবর সরাসরি আপনার ইমেইলে।</p>
@@ -142,10 +203,10 @@ const blocks = (homepage.blocks ?? [])
           <input type="hidden" name="_subject" value="Gazitime newsletter signup" />
           <input type="hidden" name="_next" value="https://gazitime.online/?subscribed=1" />
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
-          <input type="email" name="email" required placeholder="you@example.com" aria-label="ইমেইল" />
+          <input type="email" name="email" required placeholder="আপনার ইমেইল" aria-label="ইমেইল" />
           <button type="submit">সাবস্ক্রাইব</button>
         </form>
-        <p class="fineprint">যেকোনো সময় আনসাবস্ক্রাইব করতে পারবেন।</p>
+        <p style="font-size:12.5px;margin-top:8px">যেকোনো সময় আনসাবস্ক্রাইব করতে পারবেন।</p>
       </div>
     </div>
   </section>
