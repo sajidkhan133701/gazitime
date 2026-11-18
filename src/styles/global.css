@@ -6,6 +6,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/Playfair-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --wrap: 1320px;
   --orange: #f68d23;
@@ -81,14 +89,34 @@ h1, h2, h3, h4, h5 {
 .brand-side.right { text-align: right; display: flex; gap: 8px; justify-content: flex-end; }
 .brand-center { text-align: center; }
 .logo {
-  display: inline-block;
-  font-size: 46px;
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--brand);
-  letter-spacing: -0.5px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
-.logo small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 0.5px; margin-top: 2px; }
+.logo:hover { color: inherit; }
+.logo__word {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #111;
+  line-height: 1;
+}
+.logo__rule { display: block; background: var(--red); }
+.logo__tag {
+  font-family: "Kalpurush", Arial, sans-serif;
+  text-transform: uppercase;
+  color: #8d8d8d;
+  white-space: nowrap;
+}
+.logo--lg .logo__word { font-size: 46px; }
+.logo--lg .logo__rule { width: 58px; height: 2px; margin: 10px 0 8px; }
+.logo--lg .logo__tag { font-size: 10.5px; letter-spacing: 0.26em; }
+.logo--sm .logo__word { font-size: 23px; }
+.logo--sm .logo__rule { width: 30px; height: 2px; margin: 5px 0 4px; }
+.logo--sm .logo__tag { font-size: 7.5px; letter-spacing: 0.2em; }
 
 .nav {
   position: sticky; top: 0; z-index: 60;
@@ -353,7 +381,7 @@ h1, h2, h3, h4, h5 {
 .footer .container { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 26px; }
 .footer h3 { font-size: 17px; margin-bottom: 8px; }
 .footer a { display: block; padding: 3px 0; }
-.footer .logo { font-size: 30px; }
+
 .footer .bottom {
   grid-column: 1 / -1; margin-top: 18px; padding-top: 14px;
   border-top: 1px solid #bfbfbf; display: flex; justify-content: space-between;
@@ -393,7 +421,7 @@ h1, h2, h3, h4, h5 {
     background: #fff; border-bottom: 1px solid var(--rule);
     padding: 8px 12px;
   }
-  .mobile-bar .logo { font-size: 30px; }
+
   .mobile-bar .icon-btn { width: 36px; height: 36px; }
   .mobile-nav {
     display: flex; gap: 4px; overflow-x: auto; padding: 0 12px 8px;

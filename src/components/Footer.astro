@@ -1,12 +1,13 @@
 ---
 import site from '../data/site.json';
 import categories from '../data/categories.json';
+import Logo from './Logo.astro';
 ---
 
 <footer class="footer">
   <div class="container">
     <div>
-      <a class="logo" href="/">{site.name}</a>
+      <Logo size="sm" />
       <p style="margin:10px 0 0;font-size:14.5px;color:#444">{site.footerNote}</p>
       <p style="margin:8px 0 0">
         <a href={`mailto:${site.email}`} style="display:inline">{site.email}</a>

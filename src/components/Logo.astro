@@ -1,0 +1,11 @@
+---
+import site from '../data/site.json';
+
+const { size = 'lg' } = Astro.props;
+---
+
+<a class={`logo logo--${size}`} href="/" aria-label={site.name}>
+  <span class="logo__word">{site.name}</span>
+  <span class="logo__rule" aria-hidden="true"></span>
+  <span class="logo__tag">{site.tagline}</span>
+</a>

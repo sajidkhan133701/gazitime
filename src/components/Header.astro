@@ -1,6 +1,7 @@
 ---
 import site from '../data/site.json';
 import categories from '../data/categories.json';
+import Logo from './Logo.astro';
 
 const path = Astro.url.pathname;
 const nav = categories;
@@ -31,7 +32,7 @@ const today = new Intl.DateTimeFormat('bn-BD', {
       <a href="/category/special/" style="color:var(--muted)">আর্কাইভ</a>
     </div>
     <div class="brand-center">
-      <a class="logo" href="/">{site.name}<small>{site.tagline}</small></a>
+      <Logo />
     </div>
     <div class="brand-side right">
       <a href={`mailto:${site.email}`} class="icon-btn" aria-label="ইমেইল">✉</a>
@@ -58,7 +59,7 @@ const today = new Intl.DateTimeFormat('bn-BD', {
 
 <div class="mobile-bar">
   <button class="icon-btn" aria-label="মেনু" id="mnav-btn">☰</button>
-  <a class="logo" href="/">{site.name}</a>
+  <Logo size="sm" />
   <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
 </div>
 
