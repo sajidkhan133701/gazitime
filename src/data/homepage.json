@@ -51,7 +51,7 @@
       "items": ["special-river-report", "special-court-backlog", "lifestyle-city-walk", "entertainment-ott-release", "sports-youth-football", "economy-farm-loan"]
     },
     { "title": "অর্থনীতি", "layout": "split", "category": "economy", "theme": "" },
-    { "title": "সারাদেশ", "layout": "district", "category": "national", "theme": "tint" },
+    { "title": "সারাদেশ", "layout": "district", "category": "gazipur", "theme": "tint" },
     { "title": "বিনোদন", "layout": "cards3", "category": "entertainment", "theme": "pink" },
     { "title": "প্রযুক্তি", "layout": "cards4", "category": "tech", "theme": "" },
     { "title": "বিশেষ প্রতিবেদন", "layout": "split", "category": "special", "theme": "" },

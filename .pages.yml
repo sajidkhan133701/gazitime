@@ -45,6 +45,7 @@ content:
             - { label: মতামত, value: opinion }
             - { label: লাইফস্টাইল, value: lifestyle }
             - { label: বিশেষ প্রতিবেদন, value: special }
+            - { label: গাজীপুর, value: gazipur }
       - name: date
         label: প্রকাশের তারিখ
         type: date

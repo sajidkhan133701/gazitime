@@ -8,5 +8,6 @@
   { "slug": "education", "name": "শিক্ষা" },
   { "slug": "opinion", "name": "মতামত" },
   { "slug": "lifestyle", "name": "লাইফস্টাইল" },
-  { "slug": "special", "name": "বিশেষ প্রতিবেদন" }
+  { "slug": "special", "name": "বিশেষ প্রতিবেদন" },
+  { "slug": "gazipur", "name": "গাজীপুর" }
 ]
