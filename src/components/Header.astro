@@ -13,29 +13,24 @@ const today = new Intl.DateTimeFormat('bn-BD', {
 }).format(new Date());
 ---
 
-<div class="topbar">
+<div class="masthead">
   <div class="container">
-    <span>{today}</span>
-    <nav class="topbar-links" aria-label="সহায়ক">
-      <a href="/about/">আমাদের সম্পর্কে</a>
-      <a href="/contact/">যোগাযোগ</a>
-      <a href={`mailto:${site.email}`}>বিজ্ঞাপন</a>
-    </nav>
-  </div>
-</div>
-
-<div class="brandrow">
-  <div class="container">
-    <div class="brand-side">
-      <a href="/about/" style="color:var(--muted)">ই-পেপার</a>
-      <span style="color:#c9c9c9"> | </span>
-      <a href="/category/special/" style="color:var(--muted)">আর্কাইভ</a>
+    <div class="mast-side">
+      <span class="mast-date">{today}</span>
+      <span class="mast-links">
+        <a href="/about/">ই-পেপার</a>
+        <span>|</span>
+        <a href="/category/special/">আর্কাইভ</a>
+      </span>
     </div>
-    <div class="brand-center">
+
+    <div class="mast-center">
       <Logo />
     </div>
-    <div class="brand-side right">
+
+    <div class="mast-side right">
       <a href={`mailto:${site.email}`} class="icon-btn" aria-label="ইমেইল">✉</a>
+      <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
     </div>
   </div>
 </div>
@@ -49,16 +44,16 @@ const today = new Intl.DateTimeFormat('bn-BD', {
           {c.name}
         </a>
       ))}
-      <a href="/search/">খবর খুঁজুন</a>
     </div>
     <div class="nav-icons">
+      <button class="icon-btn" aria-label="মেনু" id="mnav-btn">☰</button>
       <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
     </div>
   </div>
 </nav>
 
 <div class="mobile-bar">
-  <button class="icon-btn" aria-label="মেনু" id="mnav-btn">☰</button>
+  <button class="icon-btn" aria-label="মেনু" id="mnav-btn-m">☰</button>
   <Logo size="sm" />
   <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
 </div>
@@ -73,11 +68,11 @@ const today = new Intl.DateTimeFormat('bn-BD', {
 </nav>
 
 <script>
-  const btn = document.getElementById('mnav-btn');
   const nav = document.getElementById('mnav');
-  btn?.addEventListener('click', () => {
+  const toggle = () => {
     if (!nav) return;
-    const hidden = nav.style.display === 'none';
-    nav.style.display = hidden ? 'flex' : 'none';
-  });
+    nav.style.display = nav.style.display === 'none' || !nav.style.display ? 'flex' : 'none';
+  };
+  document.getElementById('mnav-btn')?.addEventListener('click', toggle);
+  document.getElementById('mnav-btn-m')?.addEventListener('click', toggle);
 </script>
