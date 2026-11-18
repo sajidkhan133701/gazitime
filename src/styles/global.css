@@ -423,6 +423,8 @@ h1, h2, h3, h4, h5 {
   }
 
   .mobile-bar .icon-btn { width: 36px; height: 36px; }
+  .mobile-bar .logo__tag { display: none; }
+  .mobile-bar .logo__rule { margin: 4px 0 0; }
   .mobile-nav {
     display: flex; gap: 4px; overflow-x: auto; padding: 0 12px 8px;
     border-bottom: 1px solid var(--rule); background: #fff;
