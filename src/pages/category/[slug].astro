@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import categories from '../../data/categories.json';
+import { bnDate, catName } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  return categories.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const name = catName(slug);
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft && p.data.category === slug)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title={name} description={`${name} — সর্বশেষ খবর ও বিশ্লেষণ`}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{name}</h1>
+      <p>{posts.length}টি সংবাদ</p>
+    </header>
+
+    {posts.length === 0 ? (
+      <p style="padding:40px 0;color:#6b7280">এই সেকশনে এখনো কোনো খবর প্রকাশিত হয়নি।</p>
+    ) : (
+      <div class="list-grid">
+        {posts.map((p) => (
+          <article class="card">
+            <a href={`/news/${p.id}/`}>
+              {p.data.image && (
+                <img
+                  src={p.data.image}
+                  alt={p.data.imageAlt ?? p.data.title}
+                  width="400"
+                  height="260"
+                  loading="lazy"
+                  style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px"
+                />
+              )}
+              <h3>{p.data.title}</h3>
+            </a>
+            {p.data.dek && <p class="dek">{p.data.dek}</p>}
+            <div class="meta">{p.data.author} · {bnDate(p.data.date)}</div>
+          </article>
+        ))}
+      </div>
+    )}
+  </div>
+</Base>

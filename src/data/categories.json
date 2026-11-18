@@ -1,0 +1,12 @@
+[
+  { "slug": "national", "name": "জাতীয়" },
+  { "slug": "international", "name": "আন্তর্জাতিক" },
+  { "slug": "economy", "name": "অর্থনীতি" },
+  { "slug": "sports", "name": "খেলা" },
+  { "slug": "entertainment", "name": "বিনোদন" },
+  { "slug": "tech", "name": "প্রযুক্তি" },
+  { "slug": "education", "name": "শিক্ষা" },
+  { "slug": "opinion", "name": "মতামত" },
+  { "slug": "lifestyle", "name": "লাইফস্টাইল" },
+  { "slug": "special", "name": "বিশেষ প্রতিবেদন" }
+]

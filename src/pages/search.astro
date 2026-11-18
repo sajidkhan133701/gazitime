@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { bnDate, catName } from '../lib/utils';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const index = posts.map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  dek: p.data.dek ?? '',
+  cat: catName(p.data.category),
+  date: bnDate(p.data.date),
+  img: p.data.image ?? '',
+  body: (p.body ?? '').slice(0, 600),
+}));
+---
+
+<Base title="খবর খুঁজুন">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>খবর খুঁজুন</h1>
+      <p>শিরোনাম, সেকশন বা লেখার ভেতর থেকে খুঁজুন</p>
+    </header>
+
+    <div style="padding:24px 0">
+      <form class="search" role="search" style="max-width:520px;min-width:0">
+        <input id="q" type="search" placeholder="যেমন: মেট্রোরেল, ক্রিকেট, বাজেট…" aria-label="খবর খুঁজুন" />
+      </form>
+      <p id="count" style="color:#6b7280;font-size:14px;margin-top:12px">সব খবর দেখানো হচ্ছে</p>
+      <div id="results" class="list-grid" style="padding-top:12px"></div>
+    </div>
+  </div>
+
+  <script type="application/json" id="index" set:html={JSON.stringify(index)} />
+
+  <script>
+    const el = document.getElementById('index');
+    const data = JSON.parse(el?.textContent ?? '[]');
+    const q = document.getElementById('q');
+    const out = document.getElementById('results');
+    const count = document.getElementById('count');
+
+    const item = (p) =>
+      `<article class="card"><a href="/news/${p.id}/">` +
+      (p.img
+        ? `<img src="${p.img}" alt="" width="400" height="260" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px">`
+        : '') +
+      `<h3>${p.title}</h3></a>` +
+      (p.dek ? `<p class="dek">${p.dek}</p>` : '') +
+      `<div class="meta">${p.cat} · ${p.date}</div></article>`;
+
+    const render = (term) => {
+      const t = term.trim().toLowerCase();
+      const hits = t
+        ? data.filter((p) =>
+            (p.title + ' ' + p.dek + ' ' + p.body + ' ' + p.cat).toLowerCase().includes(t)
+          )
+        : data;
+      out.innerHTML = hits.map(item).join('');
+      count.textContent = t
+        ? `"${term}" — ${hits.length}টি খবর পাওয়া গেছে`
+        : 'সব খবর দেখানো হচ্ছে';
+    };
+
+    const initial = new URLSearchParams(location.search).get('q') ?? '';
+    if (q) q.value = initial;
+    render(initial);
+    q?.addEventListener('input', (e) => render(e.target.value));
+  </script>
+</Base>

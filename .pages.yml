@@ -1,0 +1,175 @@
+media:
+  input: public/images
+  output: /images
+  rename: safe
+
+content:
+  - name: posts
+    label: খবর (পোস্ট)
+    type: collection
+    path: src/content/blog
+    filename: "{primary}.md"
+    view:
+      primary: slug
+      sort: date
+      order: desc
+      fields: [title, category, date]
+    fields:
+      - name: title
+        label: শিরোনাম
+        type: string
+        required: true
+      - name: slug
+        label: URL নাম (ইংরেজিতে, যেমন: metro-rail-utsab)
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9-]+$"
+          message: "শুধু ছোট হাতের ইংরেজি অক্ষর, সংখ্যা ও হাইফেন ব্যবহার করুন"
+      - name: dek
+        label: সারসংক্ষেপ (১–২ বাক্য)
+        type: text
+      - name: category
+        label: সেকশন
+        type: select
+        required: true
+        options:
+          values:
+            - { label: জাতীয়, value: national }
+            - { label: আন্তর্জাতিক, value: international }
+            - { label: অর্থনীতি, value: economy }
+            - { label: খেলা, value: sports }
+            - { label: বিনোদন, value: entertainment }
+            - { label: প্রযুক্তি, value: tech }
+            - { label: শিক্ষা, value: education }
+            - { label: মতামত, value: opinion }
+            - { label: লাইফস্টাইল, value: lifestyle }
+            - { label: বিশেষ প্রতিবেদন, value: special }
+      - name: date
+        label: প্রকাশের তারিখ
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: author
+        label: লেখক / প্রতিবেদক
+        type: string
+      - name: image
+        label: ছবি
+        type: image
+      - name: imageAlt
+        label: ছবির বর্ণনা (alt)
+        type: string
+      - name: featured
+        label: বিশেষভাবে গুরুত্বপূর্ণ
+        type: boolean
+      - name: tags
+        label: ট্যাগ
+        type: string
+        list: true
+      - name: draft
+        label: খসড়া (প্রকাশ হবে না)
+        type: boolean
+      - name: body
+        label: সংবাদের লেখা
+        type: rich-text
+
+  - name: homepage
+    label: হোমপেজ সাজানো
+    type: file
+    path: src/data/homepage.json
+    format: json
+    fields:
+      - name: lead
+        label: প্রধান খবর (সবার বড়)
+        type: reference
+        options:
+          collection: posts
+          value: "{path}"
+          label: "{primary}"
+          search: "title"
+      - name: topList
+        label: ডান পাশের তালিকা (সর্বশেষ খবর)
+        type: reference
+        options:
+          collection: posts
+          multiple: true
+          max: 6
+          value: "{path}"
+          label: "{primary}"
+          search: "title"
+      - name: opinion
+        label: মতামত স্ট্রিপ (৩টি)
+        type: reference
+        options:
+          collection: posts
+          multiple: true
+          max: 4
+          value: "{path}"
+          label: "{primary}"
+          search: "title"
+      - name: blocks
+        label: সেকশন ব্লক
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: title
+            label: ব্লকের শিরোনাম
+            type: string
+          - name: category
+            label: কোন সেকশন
+            type: string
+          - name: items
+            label: এই ব্লকে কোন খবরগুলো (খালি রাখলে সেকশন অনুযায়ী সাজানো হবে)
+            type: reference
+            options:
+              collection: posts
+              multiple: true
+              max: 4
+              value: "{path}"
+              label: "{primary}"
+              search: "title"
+
+  - name: categories
+    label: সেকশনসমূহ
+    type: file
+    path: src/data/categories.json
+    format: json
+    list: true
+    fields:
+      - name: slug
+        label: URL নাম (ইংরেজি)
+        type: string
+        required: true
+      - name: name
+        label: প্রদর্শিত নাম (বাংলা)
+        type: string
+        required: true
+
+  - name: site
+    label: সাইট সেটিংস
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - name: name
+        label: সাইটের নাম
+        type: string
+      - name: tagline
+        label: স্লোগান
+        type: string
+      - name: description
+        label: সাইটের বর্ণনা (SEO)
+        type: text
+      - name: email
+        label: যোগাযোগ ইমেইল
+        type: string
+      - name: footerNote
+        label: ফুটার নোট
+        type: text
+      - name: copyright
+        label: কপিরাইট টেক্সট
+        type: string

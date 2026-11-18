@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+---
+
+<Base title="যোগাযোগ">
+  <div class="wrap">
+    <article class="article">
+      <span class="eyebrow">যোগাযোগ</span>
+      <h1>আমাদের সাথে যোগাযোগ করুন</h1>
+      <div class="prose">
+        <p>সংবাদtips, সংশোধনী, বিজ্ঞাপন বা যেকোনো মতামত জানাতে পারেন সরাসরি।</p>
+        <p>
+          ইমেইল: <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      </div>
+
+      <form
+        action="https://formsubmit.co/hello@gazitime.online"
+        method="POST"
+        style="display:grid;gap:12px;margin-top:24px;max-width:560px"
+      >
+        <input type="hidden" name="_subject" value="Gazitime — যোগাযোগ ফর্ম" />
+        <input type="hidden" name="_next" value="https://gazitime.online/contact/?sent=1" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+        <input
+          type="text"
+          name="নাম"
+          required
+          placeholder="আপনার নাম"
+          style="padding:12px 14px;border:1px solid #c9ced6;border-radius:2px;font-family:inherit;font-size:15px"
+        />
+        <input
+          type="email"
+          name="ইমেইল"
+          required
+          placeholder="আপনার ইমেইল"
+          style="padding:12px 14px;border:1px solid #c9ced6;border-radius:2px;font-family:inherit;font-size:15px"
+        />
+        <textarea
+          name="বার্তা"
+          rows="5"
+          required
+          placeholder="আপনার বার্তা"
+          style="padding:12px 14px;border:1px solid #c9ced6;border-radius:2px;font-family:inherit;font-size:15px"></textarea>
+        <button
+          type="submit"
+          style="padding:12px 22px;background:#c4161c;color:#fff;border:0;border-radius:2px;font-weight:600;justify-self:start"
+        >
+          পাঠান
+        </button>
+      </form>
+    </article>
+  </div>
+</Base>

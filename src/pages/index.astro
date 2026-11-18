@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+import homepage from '../data/homepage.json';
+import { bnDate, catName } from '../lib/utils';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const byId = new Map(posts.map((p) => [p.id, p]));
+
+/** CMS writes either "slug" or a repo path — normalise both to the post id */
+const norm = (v: string) => v.replace(/^.*\//, '').replace(/\.md$/, '');
+const pick = (v: string) => byId.get(norm(v));
+
+const lead = (homepage.lead ? pick(homepage.lead) : undefined) ?? posts[0];
+const side = (homepage.topList ?? []).map(pick).filter((p) => p && p.id !== lead?.id);
+const sideList = side.length ? side : posts.slice(1, 5);
+
+const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean);
+
+const blocks = (homepage.blocks ?? [])
+  .map((b) => {
+    const manual = (b.items ?? []).map(pick).filter(Boolean);
+    const auto = posts.filter((p) => p.data.category === b.category);
+    const merged = manual.length ? manual : auto;
+    const unique = merged.filter((p, i, arr) => arr.findIndex((x) => x.id === p.id) === i);
+    return { ...b, items: unique.slice(0, 4) };
+  })
+  .filter((b) => b.items.length > 0);
+---
+
+<Base>
+  <div class="wrap">
+    <div class="hero">
+      <article class="hero-lead">
+        <span class="eyebrow">
+          <a href={`/category/${lead.data.category}/`}>{catName(lead.data.category)}</a>
+        </span>
+        {lead.data.image && (
+          <a href={`/news/${lead.id}/`}>
+            <img
+              src={lead.data.image}
+              alt={lead.data.imageAlt ?? lead.data.title}
+              width="800"
+              height="450"
+              loading="eager"
+              style="margin-bottom:14px"
+            />
+          </a>
+        )}
+        <h1><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h1>
+        {lead.data.dek && <p class="dek">{lead.data.dek}</p>}
+        <div class="meta" style="font-size:12px;color:var(--muted)">
+          {lead.data.author} · {bnDate(lead.data.date)}
+        </div>
+      </article>
+
+      <aside class="hero-list">
+        <h2>সর্বশেষ</h2>
+        <ol>
+          {sideList.map((p) => (
+            <li>
+              <a href={`/news/${p.id}/`}>{p.data.title}</a>
+              <span class="time">{catName(p.data.category)} · {bnDate(p.data.date)}</span>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
+  </div>
+
+  {blocks.map((b, idx) => (
+    <>
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>{b.title}</h2>
+            <a class="more" href={`/category/${b.category}/`}>আরও →</a>
+          </div>
+
+          <div class="block-split">
+            <article class="big card">
+              <a href={`/news/${b.items[0].id}/`}>
+                {b.items[0].data.image && (
+                  <img
+                    src={b.items[0].data.image}
+                    alt={b.items[0].data.imageAlt ?? b.items[0].data.title}
+                    width="720"
+                    height="450"
+                    loading="lazy"
+                  />
+                )}
+                <h3>{b.items[0].data.title}</h3>
+              </a>
+              {b.items[0].data.dek && <p class="dek">{b.items[0].data.dek}</p>}
+            </article>
+
+            <div class="block-list">
+              {b.items.slice(1).map((p) => (
+                <article>
+                  <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
+                  <div class="meta">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {idx === 1 && opinion.length > 0 && (
+        <section class="section opinion-band">
+          <div class="wrap">
+            <div class="section-head">
+              <h2>মতামত</h2>
+              <a class="more" href="/category/opinion/">আরও →</a>
+            </div>
+            <div class="opinion-grid">
+              {opinion.map((p) => (
+                <a class="quote" href={`/news/${p.id}/`}>
+                  <p>{p.data.title}</p>
+                  <span class="by">{p.data.author}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
+  ))}
+
+  <section class="newsletter">
+    <div class="wrap">
+      <div>
+        <h2>সাপ্তাহিক সংবাদপত্র</h2>
+        <p>সপ্তাহের সেরা খবর সরাসরি আপনার ইমেইলে।</p>
+      </div>
+      <div>
+        <form action="https://formsubmit.co/hello@gazitime.online" method="POST">
+          <input type="hidden" name="_subject" value="Gazitime newsletter signup" />
+          <input type="hidden" name="_next" value="https://gazitime.online/?subscribed=1" />
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+          <input type="email" name="email" required placeholder="you@example.com" aria-label="ইমেইল" />
+          <button type="submit">সাবস্ক্রাইব</button>
+        </form>
+        <p class="fineprint">যেকোনো সময় আনসাবস্ক্রাইব করতে পারবেন।</p>
+      </div>
+    </div>
+  </section>
+</Base>

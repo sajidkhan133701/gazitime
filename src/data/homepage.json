@@ -1,0 +1,46 @@
+{
+  "lead": "metro-rail-utsab",
+  "topList": [
+    "ruet-admission-date",
+    "garment-wage-board",
+    "cricket-series-win",
+    "tech-startup-funding"
+  ],
+  "opinion": [
+    "opinion-digital-education",
+    "opinion-urban-green",
+    "opinion-remittance"
+  ],
+  "blocks": [
+    {
+      "title": "জাতীয়",
+      "category": "national",
+      "items": []
+    },
+    {
+      "title": "আন্তর্জাতিক",
+      "category": "international",
+      "items": []
+    },
+    {
+      "title": "অর্থনীতি",
+      "category": "economy",
+      "items": []
+    },
+    {
+      "title": "প্রযুক্তি",
+      "category": "tech",
+      "items": []
+    },
+    {
+      "title": "খেলা",
+      "category": "sports",
+      "items": []
+    },
+    {
+      "title": "বিনোদন",
+      "category": "entertainment",
+      "items": []
+    }
+  ]
+}

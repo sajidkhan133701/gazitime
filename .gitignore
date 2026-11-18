@@ -11,7 +11,9 @@ hostinger-*.png
 # tooling
 node_modules/
 .wrangler/
-package-lock.json
+dist/
+.astro/
+npm-debug.log*
 
 # OS junk
 .DS_Store

@@ -1,0 +1,38 @@
+---
+import site from '../data/site.json';
+import categories from '../data/categories.json';
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="/">{site.name}</a>
+      <p style="margin:10px 0 0">{site.footerNote}</p>
+      <p style="margin:6px 0 0">
+        <a href={`mailto:${site.email}`} style="display:inline">{site.email}</a>
+      </p>
+    </div>
+
+    <div>
+      <h3>সেকশন</h3>
+      {categories.slice(0, 5).map((c) => <a href={`/category/${c.slug}/`}>{c.name}</a>)}
+    </div>
+
+    <div>
+      <h3>আরও</h3>
+      {categories.slice(5, 10).map((c) => <a href={`/category/${c.slug}/`}>{c.name}</a>)}
+    </div>
+
+    <div>
+      <h3>সংবাদমাধ্যম</h3>
+      <a href="/about/">আমাদের সম্পর্কে</a>
+      <a href="/contact/">যোগাযোগ</a>
+      <a href="/search/">খবর খুঁজুন</a>
+    </div>
+  </div>
+
+  <div class="wrap bottom">
+    <span>{site.copyright}</span>
+    <span>ডিজাইন ও হোস্টিং: Cloudflare</span>
+  </div>
+</footer>

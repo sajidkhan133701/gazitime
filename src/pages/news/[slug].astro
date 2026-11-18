@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { bnDate, catName, readingTime } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const related = (await getCollection('blog'))
+  .filter((p) => !p.data.draft && p.data.category === post.data.category && p.id !== post.id)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const minutes = readingTime(post.body ?? '');
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.dek ?? post.data.title}
+  image={post.data.image ?? '/images/metro.jpg'}
+  type="article"
+>
+  <div class="wrap">
+    <article class="article">
+      <nav class="breadcrumb">
+        <a href="/">প্রচ্ছদ</a> ›
+        <a href={`/category/${post.data.category}/`}>{catName(post.data.category)}</a>
+      </nav>
+
+      <span class="eyebrow">{catName(post.data.category)}</span>
+      <h1>{post.data.title}</h1>
+      {post.data.dek && <p class="dek">{post.data.dek}</p>}
+
+      <div class="byline">
+        <span>{post.data.author}</span>
+        <span>{bnDate(post.data.date)}</span>
+        <span>পড়তে লাগবে {minutes} মিনিট</span>
+      </div>
+
+      {post.data.image && (
+        <figure>
+          <img
+            src={post.data.image}
+            alt={post.data.imageAlt ?? post.data.title}
+            width="760"
+            height="430"
+            loading="eager"
+          />
+          {post.data.imageAlt && <figcaption>{post.data.imageAlt}</figcaption>}
+        </figure>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {post.data.tags.length > 0 && (
+        <div class="taglist">
+          {post.data.tags.map((t) => (
+            <a href={`/search/?q=${encodeURIComponent(t)}`}>#{t}</a>
+          ))}
+        </div>
+      )}
+    </article>
+
+    {related.length > 0 && (
+      <section class="section" style="border-bottom:0">
+        <div class="section-head">
+          <h2>একই সেকশনের আরও</h2>
+          <a class="more" href={`/category/${post.data.category}/`}>আরও →</a>
+        </div>
+        <div class="list-grid" style="padding-top:0">
+          {related.map((p) => (
+            <article class="card">
+              <a href={`/news/${p.id}/`}>
+                {p.data.image && (
+                  <img
+                    src={p.data.image}
+                    alt={p.data.imageAlt ?? p.data.title}
+                    width="400"
+                    height="260"
+                    loading="lazy"
+                    style="width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:8px;border-radius:2px"
+                  />
+                )}
+                <h4>{p.data.title}</h4>
+              </a>
+              <div class="meta">{bnDate(p.data.date)}</div>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
