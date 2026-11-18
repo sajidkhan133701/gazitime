@@ -3,6 +3,10 @@ _original/
 
 # internal notes (not for the public repo)
 _notes/
+cloudflare-email-routing-progress.md
+gazitime-form-test/
+hostinger-*.png
+*.screenshot.png
 
 # tooling
 node_modules/
