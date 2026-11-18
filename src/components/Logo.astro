@@ -2,10 +2,16 @@
 import site from '../data/site.json';
 
 const { size = 'lg' } = Astro.props;
+
+const full = site.name ?? 'GAZITIME';
+const left = site.logoLeft ?? full;
+const right = site.logoRight ?? '';
 ---
 
-<a class={`logo logo--${size}`} href="/" aria-label={site.name}>
-  <span class="logo__word">{site.name}</span>
+<a class={`logo logo--${size}`} href="/" aria-label={full}>
+  <span class="logo__word">
+    <span class="logo__word-a">{left}</span><span class="logo__word-b">{right}</span>
+  </span>
   <span class="logo__rule" aria-hidden="true"></span>
   <span class="logo__tag">{site.tagline}</span>
 </a>

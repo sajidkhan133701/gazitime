@@ -104,6 +104,8 @@ h1, h2, h3, h4, h5 {
   color: #111;
   line-height: 1;
 }
+.logo__word-a { color: #111; }
+.logo__word-b { color: var(--brand); }
 .logo__rule { display: block; background: var(--red); }
 .logo__tag {
   font-family: "Kalpurush", Arial, sans-serif;
