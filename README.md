@@ -6,7 +6,7 @@ Bilingual (বাংলা / English) news website for **gazitime.online**.
 |---|---|
 | **Live** | https://gazitime.online |
 | **Hosting** | Cloudflare Pages (free) |
-| **Repo** | https://github.com/sabbirofficial44/gazitime |
+| **Repo** | https://github.com/sajidkhan133701/gazitime |
 | **Stack** | Plain HTML + CSS + JS — kono build step nei |
 
 > Ei folder = puro website. Ekhane edit koro, tarpor `deploy.ps1` chalao — live hoye jabe.
@@ -75,7 +75,7 @@ Ei value gulo badlale puro site er look change hobe.
 ## Deploy (edit kore live kora)
 
 ```powershell
-cd "E:\Programmng Space\Gazitime"
+cd "F:\Gazitime"
 
 .\preview.ps1                      # 1) nijer PC te dekho -> http://localhost:5600
 .\deploy.ps1 "notun khobor add korlam"   # 2) live koro -> ~40 sec
@@ -107,7 +107,7 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 DNS/build log dekhতে: https://dash.cloudflare.com → Workers & Pages → `gazitime`
 
-GitHub account: `sabbirofficial44`
+GitHub account: `sajidkhan133701`
 
 ---
 

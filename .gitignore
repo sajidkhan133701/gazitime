@@ -1,6 +1,9 @@
 # local backups
 _original/
 
+# internal notes (not for the public repo)
+_notes/
+
 # tooling
 node_modules/
 .wrangler/
