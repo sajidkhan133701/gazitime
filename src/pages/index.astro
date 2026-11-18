@@ -19,10 +19,19 @@ const heroText = (homepage.heroText ?? []).map(pick).filter(Boolean).slice(0, 3)
 const railVideo = homepage.railVideo ? pick(homepage.railVideo) : undefined;
 const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 3);
 
-const limits: Record<string, number> = { split: 5, cards3: 3, cards4: 4 };
+const limits: Record<string, number> = { split: 5, cards3: 3, cards4: 4, video: 5, shorts: 6, district: 5 };
 
 const sections = (homepage.sections ?? [])
   .map((s: any) => {
+    if (s.layout === 'cols') {
+      const columns = (s.columns ?? [])
+        .map((c: any) => ({
+          title: c.title,
+          items: (c.items ?? []).map(pick).filter(Boolean).slice(0, 4),
+        }))
+        .filter((c: any) => c.items.length > 0);
+      return { ...s, items: columns.flatMap((c: any) => c.items), columns };
+    }
     const manual = (s.items ?? []).map(pick).filter(Boolean);
     const auto = s.category ? posts.filter((p) => p.data.category === s.category) : [];
     const merged = manual.length ? manual : auto;
@@ -168,6 +177,84 @@ const sections = (homepage.sections ?? [])
                 </article>
               ))}
             </div>
+          </div>
+        )}
+
+        {s.layout === 'video' && (
+          <div class="video-band">
+            <article class="video-lead">
+              <a href={`/news/${s.items[0].id}/`} style="position:relative;display:block">
+                {s.items[0].data.image && (
+                  <img src={s.items[0].data.image} alt={s.items[0].data.imageAlt ?? s.items[0].data.title} width="720" height="405" loading="lazy" />
+                )}
+                <span class="play-badge"><span>▶</span></span>
+              </a>
+              <h3><a href={`/news/${s.items[0].id}/`}>{s.items[0].data.title}</a></h3>
+              {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
+            </article>
+            <div class="video-list">
+              {s.items.slice(1).map((p) => (
+                <a href={`/news/${p.id}/`} class="video-row">
+                  <span class="video-row__text">{p.data.title}</span>
+                  {p.data.image && <img src={p.data.image} alt="" width="120" height="68" loading="lazy" />}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {s.layout === 'shorts' && (
+          <div class="shorts-row">
+            {s.items.map((p) => (
+              <a href={`/news/${p.id}/`} class="short-card">
+                {p.data.image && <img src={p.data.image} alt="" width="168" height="298" loading="lazy" />}
+                <h4>{p.data.title}</h4>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {s.layout === 'district' && (
+          <>
+            <div class="chips">
+              {['ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'বরিশাল', 'সিলেট', 'রংপুর', 'ময়মনসিংহ'].map((d) => (
+                <a href="/category/national/">{d}</a>
+              ))}
+            </div>
+            <div class="split-1-3">
+              <article class="big-story">
+                <a href={`/news/${s.items[0].id}/`}>
+                  {s.items[0].data.image && (
+                    <img src={s.items[0].data.image} alt={s.items[0].data.imageAlt ?? s.items[0].data.title} width="700" height="394" loading="lazy" />
+                  )}
+                  <h3>{s.items[0].data.title}</h3>
+                </a>
+                {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
+              </article>
+              <div class="list-thumbs">
+                {s.items.slice(1).map((p) => (
+                  <article>
+                    <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
+                    <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {s.layout === 'cols' && (
+          <div class="cols3">
+            {s.columns.map((c: any) => (
+              <div class="textlist">
+                <h4>{c.title}</h4>
+                <ul>
+                  {c.items.map((p: any) => (
+                    <li><a href={`/news/${p.id}/`}>{p.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         )}
 

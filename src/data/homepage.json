@@ -9,72 +9,66 @@
     "dhaka-flood-drain",
     "tech-startup-funding",
     "film-festival-dhaka",
-    "football-league-final"
+    "sports-stadium-final"
   ],
   "heroText": [
     "eu-climate-summit",
-    "un-migration-report",
+    "national-bus-terminal",
     "remittance-record"
   ],
-  "railVideo": "music-concert-winter",
+  "railVideo": "entertainment-ott-release",
   "opinion": [
     "opinion-digital-education",
     "opinion-urban-green",
-    "opinion-remittance"
+    "opinion-city-traffic"
   ],
   "sections": [
-    {
-      "title": "আন্তর্জাতিক",
-      "layout": "split",
-      "category": "international",
-      "theme": ""
-    },
+    { "title": "আন্তর্জাতিক", "layout": "split", "category": "international", "theme": "" },
     {
       "title": "নির্বাচিত",
       "layout": "cards3",
       "category": "",
       "theme": "tint",
-      "items": [
-        "dhaka-flood-drain",
-        "film-festival-dhaka",
-        "ai-health-pilot"
+      "items": ["dhaka-flood-drain", "film-festival-dhaka", "ai-health-pilot"]
+    },
+    { "title": "খেলা", "layout": "split", "category": "sports", "theme": "" },
+    {
+      "title": "ভিডিও",
+      "layout": "video",
+      "category": "",
+      "theme": "dark",
+      "items": ["entertainment-ott-release", "sports-stadium-final", "national-bus-terminal", "lifestyle-winter-food", "tech-data-centre"]
+    },
+    {
+      "title": "শর্টস",
+      "layout": "shorts",
+      "category": "",
+      "theme": "tint",
+      "items": ["special-river-report", "special-court-backlog", "lifestyle-city-walk", "entertainment-ott-release", "sports-youth-football", "economy-farm-loan"]
+    },
+    { "title": "অর্থনীতি", "layout": "split", "category": "economy", "theme": "" },
+    { "title": "সারাদেশ", "layout": "district", "category": "national", "theme": "tint" },
+    { "title": "বিনোদন", "layout": "cards3", "category": "entertainment", "theme": "pink" },
+    { "title": "প্রযুক্তি", "layout": "cards4", "category": "tech", "theme": "" },
+    { "title": "বিশেষ প্রতিবেদন", "layout": "split", "category": "special", "theme": "" },
+    {
+      "title": "আইন, অপরাধ ও শিক্ষা",
+      "layout": "cols",
+      "theme": "tint",
+      "columns": [
+        {
+          "title": "আইন ও বিচার",
+          "items": ["special-court-backlog", "dhaka-flood-drain", "national-water-supply"]
+        },
+        {
+          "title": "অর্থনীতি",
+          "items": ["garment-wage-board", "remittance-record", "economy-farm-loan"]
+        },
+        {
+          "title": "শিক্ষা",
+          "items": ["ruet-admission-date", "education-exam-routine", "ai-health-pilot"]
+        }
       ]
-    },
-    {
-      "title": "খেলা",
-      "layout": "split",
-      "category": "sports",
-      "theme": ""
-    },
-    {
-      "title": "অর্থনীতি",
-      "layout": "split",
-      "category": "economy",
-      "theme": ""
-    },
-    {
-      "title": "বিনোদন",
-      "layout": "cards3",
-      "category": "entertainment",
-      "theme": "pink"
-    },
-    {
-      "title": "প্রযুক্তি",
-      "layout": "cards4",
-      "category": "tech",
-      "theme": ""
-    },
-    {
-      "title": "শিক্ষা ও জীবনযাত্রা",
-      "layout": "cards3",
-      "category": "education",
-      "theme": "tint"
-    },
-    {
-      "title": "বিশেষ প্রতিবেদন",
-      "layout": "split",
-      "category": "special",
-      "theme": ""
     }
   ]
 }
