@@ -156,7 +156,13 @@ content:
     format: json
     fields:
       - name: name
-        label: সাইটের নাম
+        label: সাইটের নাম (পুরো, যেমন GAZITIME)
+        type: string
+      - name: logoLeft
+        label: লোগোর প্রথম অংশ (কালো)
+        type: string
+      - name: logoRight
+        label: লোগোর দ্বিতীয় অংশ (লাল)
         type: string
       - name: tagline
         label: স্লোগান

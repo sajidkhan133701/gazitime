@@ -15,6 +15,7 @@ const pick = (v: string) => byId.get(norm(v));
 const lead = (homepage.lead ? pick(homepage.lead) : undefined) ?? posts[0];
 const breaking = (homepage.breaking ?? []).map(pick).filter((p) => p && p.id !== lead.id);
 const heroCards = (homepage.heroCards ?? []).map(pick).filter(Boolean).slice(0, 4);
+const heroPhotos = ((homepage as any).leadPhotos ?? []).map(pick).filter(Boolean).slice(0, 2);
 const heroText = (homepage.heroText ?? []).map(pick).filter(Boolean).slice(0, 3);
 const railVideo = homepage.railVideo ? pick(homepage.railVideo) : undefined;
 const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 3);
@@ -53,58 +54,59 @@ const sections = (homepage.sections ?? [])
     <div class="hero">
       <div class="hero-main">
         <div class="hero-top">
-          <article class="hero-lead">
-            <span class="kicker">প্রথম পাতা</span>
+          <article class="lead-copy">
             <h1 class="lead-title"><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h1>
             {lead.data.dek && <p class="lead-dek">{lead.data.dek}</p>}
-            {lead.data.image && (
-              <a href={`/news/${lead.id}/`}>
-                <img
-                  class="lead-img"
-                  src={lead.data.image}
-                  alt={lead.data.imageAlt ?? lead.data.title}
-                  width="800"
-                  height="450"
-                  loading="eager"
-                />
-              </a>
-            )}
           </article>
 
-          <aside class="breaking">
-            <h3>সর্বশেষ</h3>
-            <ul>
-              {breaking.map((p) => (
-                <li>
-                  <a href={`/news/${p.id}/`}>{p.data.title}</a>
-                  {p.data.image && (
-                    <img src={p.data.image} alt="" width="88" height="62" loading="lazy" />
-                  )}
-                </li>
-              ))}
-            </ul>
+          <div class="lead-photos">
+            {heroPhotos.map((p) => (
+              <a href={`/news/${p.id}/`}>
+                {p.data.image && (
+                  <img
+                    src={p.data.image}
+                    alt={p.data.imageAlt ?? p.data.title}
+                    width="150"
+                    height="200"
+                    loading="eager"
+                  />
+                )}
+              </a>
+            ))}
+          </div>
+
+          <aside class="hero-list">
+            {breaking.slice(0, 3).map((p) => (
+              <article>
+                <a href={`/news/${p.id}/`}>
+                  <h4>{p.data.title}</h4>
+                </a>
+                {p.data.image && (
+                  <img src={p.data.image} alt="" width="88" height="62" loading="lazy" />
+                )}
+              </article>
+            ))}
           </aside>
         </div>
 
-        <div class="cards4">
-          {heroCards.map((p) => (
+        <div class="hero-strip">
+          {heroText.map((p) => (
             <article>
               <a href={`/news/${p.id}/`}>
-                {p.data.image && (
-                  <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="300" height="225" loading="lazy" />
-                )}
                 <h4>{p.data.title}</h4>
               </a>
+              {p.data.image && <img src={p.data.image} alt="" width="80" height="58" loading="lazy" />}
             </article>
           ))}
         </div>
 
-        <div class="headlines3">
-          {heroText.map((p) => (
-            <article>
-              <a href={`/news/${p.id}/`}>{p.data.title}</a>
-              <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
-            </article>
+        <div class="hero-imgs">
+          {heroCards.map((p) => (
+            <a href={`/news/${p.id}/`}>
+              {p.data.image && (
+                <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="260" height="160" loading="lazy" />
+              )}
+            </a>
           ))}
         </div>
       </div>
