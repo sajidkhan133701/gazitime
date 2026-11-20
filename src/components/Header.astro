@@ -22,9 +22,12 @@ const today = new Intl.DateTimeFormat('bn-BD', {
 
 const nav = [
   { name: 'হোম', href: '/' },
+  { name: 'গাজীপুর', href: '/category/gazipur/' },
   { name: 'সর্বশেষ', href: '/latest/' },
   { name: 'আজকের পত্রিকা', href: '/archive/' },
-  ...categories.map((c) => ({ name: c.name, href: `/category/${c.slug}/` })),
+  ...categories
+    .filter((c) => c.slug !== 'gazipur')
+    .map((c) => ({ name: c.name, href: `/category/${c.slug}/` })),
 ];
 
 const isActive = (href: string) =>
