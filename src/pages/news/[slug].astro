@@ -1,7 +1,8 @@
----
+﻿---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { bnDate, catName, readingTime } from '../../lib/utils';
+import { related } from '../../lib/feed';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -17,11 +18,7 @@ const all = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const more = all
-  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
-  .slice(0, 4);
-const fill = all.filter((p) => p.id !== post.id && p.data.category !== post.data.category);
-const readMore = [...more, ...fill].slice(0, 4);
+const readMore = related(all, post, 4);
 
 const href = (p: any) => `/news/${p.id}/`;
 const img = (p: any) => p.data.image ?? '/images/city.jpg';
@@ -29,7 +26,7 @@ const shareUrl = `https://gazitime.online/news/${post.id}/`;
 const tags = post.data.tags ?? [];
 ---
 
-<Base title={post.data.title} description={post.data.description} image={img(post)} type="article">
+<Base title={post.data.title} description={post.data.dek} image={img(post)} type="article">
   <section class="article-wrap">
     <div class="container">
       <div class="row gx-5">

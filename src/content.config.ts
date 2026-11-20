@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+﻿import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
@@ -14,6 +14,9 @@ const blog = defineCollection({
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    views: z.number().default(0),
+    breaking: z.boolean().default(false),
+    updatedAt: z.coerce.date().optional(),
   }),
 });
 

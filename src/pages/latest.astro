@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import { allPosts, href, img, catOf } from '../lib/feed';
+import { bnDate, catName } from '../lib/utils';
+
+const all = await allPosts();
+
+const groups: { label: string; items: typeof all }[] = [];
+for (const p of all) {
+  const label = bnDate(p.data.date);
+  const g = groups.find((x) => x.label === label);
+  if (g) g.items.push(p);
+  else groups.push({ label, items: [p] });
+}
+
+const timeBn = (d: Date) =>
+  new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka' }).format(d);
+---
+
+<Base title="সর্বশেষ" description="গজিটাইমের সর্বশেষ সংবাদ">
+  <section class="listing-wrap">
+    <div class="container">
+      <div class="listing-head">
+        <h1>সর্বশেষ</h1>
+        <p class="listing-sub">প্রকাশের সময় অনুযায়ী সাজানো — নতুন সংবাদ সবার উপরে</p>
+      </div>
+
+      {groups.map((g) => (
+        <div class="latest-group">
+          <div class="latest-day">{g.label}</div>
+          {g.items.map((p) => (
+            <article class="listing-row">
+              <div class="row g-3 align-items-start">
+                <div class="col-lg-9 col-8">
+                  <div class="listing-meta">
+                    <span class="listing-time">{timeBn(p.data.date)}</span>
+                    <a class="listing-cat" href={`/category/${catOf(p)}/`}>{catName(catOf(p))}</a>
+                  </div>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                  {p.data.dek && <p class="listing-dek">{p.data.dek}</p>}
+                </div>
+                <div class="col-lg-3 col-4">
+                  <a href={href(p)}><img src={img(p)} alt={p.data.title} width="220" height="132" loading="lazy" /></a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

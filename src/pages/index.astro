@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import homepage from '../data/homepage.json';
 import { bnDate, catName } from '../lib/utils';
+import { latest, popular, fill, section, type Post } from '../lib/feed';
 
 const all = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
@@ -13,13 +14,15 @@ const pick = (id?: string) => all.find((p) => p.id === id);
 const byCat = (slug: string) => all.filter((p) => p.data.category === slug);
 
 const img = (p: any) => p?.data?.image ?? '/images/city.jpg';
+const timeBn = (d: Date) =>
+  new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka' }).format(d);
 const href = (p: any) => `/news/${p.id}/`;
 
 const lead = pick(homepage.lead) ?? all[0];
 const heroSide = all.filter((p) => p.id !== lead.id).slice(0, 3);
-const midRow1 = (homepage.heroText ?? []).map(pick).filter(Boolean) as any[];
-const photoCards = (homepage.heroCards ?? []).map(pick).filter(Boolean).slice(0, 4) as any[];
-const midRow2 = (homepage.breaking ?? []).map(pick).filter((p) => p && p.id !== lead.id).slice(0, 3) as any[];
+const midRow1 = latest(all, 3, [lead.id]);
+const photoCards = latest(all, 4, [lead.id, ...midRow1.map((p) => p.id)]);
+const midRow2 = latest(all, 3, [lead.id, ...photoCards.map((p) => p.id)]);
 const railVideo = pick(homepage.railVideo);
 
 const intlCat = byCat('international');
@@ -31,17 +34,17 @@ const selected = (homepage.sections ?? [])
 const selectedBase = selected ? (selected.items as string[]).map(pick).filter(Boolean) : [];
 const selectedItems = [...selectedBase, ...all.filter((p) => !selectedBase.some((x: any) => x.id === p.id))].slice(0, 6);
 
-const opinionItems = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 4) as any[];
+const opinionItems = section(all, 'opinion', homepage.opinion ?? [], 4);
 
 const sportsCat = byCat('sports');
 const sportsTop = sportsCat.slice(0, 2);
 const sportsList = sportsCat.slice(2, 6);
 
 const videoBlock = (homepage.sections ?? []).find((s: any) => s.layout === 'video');
-const videoItems = (videoBlock?.items ?? []).map(pick).filter(Boolean).slice(0, 5) as any[];
+const videoItems = section(all, 'entertainment', videoBlock?.items ?? [], 5);
 
 const shortsBlock = (homepage.sections ?? []).find((s: any) => s.layout === 'shorts');
-const shortsItems = (shortsBlock?.items ?? []).map(pick).filter(Boolean).slice(0, 6) as any[];
+const shortsItems = section(all, 'entertainment', shortsBlock?.items ?? [], 6);
 
 const politicsCat = byCat('national');
 const politicsTop = politicsCat.slice(0, 3);
@@ -62,8 +65,8 @@ const nationalCat = byCat('national');
 
 const lawCols = [
   { title: 'আইন ও বিচার', href: '/category/special/', items: lawCat.slice(0, 4) },
-  { title: 'অপরাধ', href: '/category/national/', items: nationalCat.slice(5, 9) },
-  { title: 'দুর্ঘটনা', href: '/category/national/', items: nationalCat.slice(9, 13) },
+  { title: 'অপরাধ', href: '/category/national/', items: nationalCat.slice(4, 8) },
+  { title: 'দুর্ঘটনা', href: '/category/national/', items: nationalCat.slice(8, 12) },
   { title: 'শিক্ষাঙ্গন', href: '/category/education/', items: educationCat.slice(0, 4) },
 ];
 
@@ -292,9 +295,9 @@ const featureCols = [
             <div class="tab-content border p-2">
               <div class="tab-pane fade show active" id="tabLatest">
                 <ul class="list-unstyled mb-0">
-                  {all.slice(0, 5).map((p) => (
+                  {latest(all, 5).map((p) => (
                     <li class="d-flex gap-2 py-2 border-bottom">
-                      <span class="text-muted" style="font-size:13px">{new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false }).format(p.data.date)}</span>
+                      <span class="text-muted" style="font-size:13px">{timeBn(p.data.date)}</span>
                       <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
                     </li>
                   ))}
@@ -305,9 +308,9 @@ const featureCols = [
               </div>
               <div class="tab-pane fade" id="tabPopular">
                 <ul class="list-unstyled mb-0">
-                  {sportsCat.slice(0, 5).map((p) => (
+                  {popular(all, 5).map((p) => (
                     <li class="d-flex gap-2 py-2 border-bottom">
-                      <span class="text-muted" style="font-size:13px">{new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false }).format(p.data.date)}</span>
+                      <span class="text-muted" style="font-size:13px">{timeBn(p.data.date)}</span>
                       <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
                     </li>
                   ))}
