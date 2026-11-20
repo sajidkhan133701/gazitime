@@ -37,3 +37,15 @@
     })
     .catch(function () {});
 })();
+
+/* sticky nav shadow */
+(function () {
+  var nav = document.querySelector('.navbar-area');
+  if (!nav) return;
+  var onScroll = function () {
+    if (window.scrollY > 8) nav.classList.add('is-stuck');
+    else nav.classList.remove('is-stuck');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();

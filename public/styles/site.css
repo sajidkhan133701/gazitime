@@ -812,3 +812,30 @@ button:focus-visible,
   border: 0;
 }
 .news-source { font-size: 13px; color: #868e96; margin-top: 18px; padding-top: 10px; border-top: 1px solid #eee; }
+
+/* ==========================================================================
+   Sticky navigation — menu stays pinned while the page scrolls
+   ========================================================================== */
+html, body { overflow-x: clip; }
+
+.navbar-area {
+  position: sticky !important;
+  top: 0;
+  z-index: 1020;
+  background: #fff;
+  transition: box-shadow .2s ease;
+}
+.navbar-area.is-stuck {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .10);
+}
+
+/* mobile: the logo bar scrolls away, the category strip stays */
+@media (max-width: 991.98px) {
+  .navbar-area {
+    top: 0;
+    position: sticky !important;
+    z-index: 1020;
+  }
+  .mobile-logo-bar { position: relative; z-index: 1; }
+  .navbar-area .scrollable-menu { padding: 2px 0; }
+}
