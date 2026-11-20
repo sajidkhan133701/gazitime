@@ -763,3 +763,37 @@ button:focus-visible,
   outline: 2px solid var(--secondary-color);
   outline-offset: 2px;
 }
+
+/* ==========================================================================
+   Chips — exact reference values (.btn-tag)
+   bg #f8f9fa · border #e0e0e0 · padding 8/20 · 0.95rem · radius 50px · h 41px
+   ========================================================================== */
+.btn-tag,
+.carousel-cell.btn-tag,
+.tag-scroll .btn-tag,
+.political-section .btn-tag {
+  color: #212529 !important;
+  background-color: #f8f9fa !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 50px !important;
+  padding: 8px 20px !important;
+  font-size: .95rem !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+  text-decoration: none;
+  display: inline-block;
+  transition: all .2s ease-in-out;
+}
+.btn-tag:hover,
+.carousel-cell.btn-tag:hover,
+.tag-scroll .btn-tag:hover,
+.political-section .btn-tag:hover {
+  color: #000 !important;
+  background-color: #e9ecef !important;
+  border-color: #ced4da !important;
+}
+.btn-tag:active,
+.carousel-cell.btn-tag:active {
+  background-color: #dee2e6 !important;
+  border-color: #ced4da !important;
+}
