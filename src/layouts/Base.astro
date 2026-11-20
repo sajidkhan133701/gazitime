@@ -9,6 +9,8 @@ const {
   image = '/images/metro.jpg',
   type = 'website',
   bodyClass = '',
+  slug = '',
+  cat = '',
 } = Astro.props;
 
 const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
@@ -37,12 +39,13 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <meta property="og:image" content={new URL(image, Astro.site ?? Astro.url).href} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class={bodyClass}>
+  <body class={bodyClass} data-slug={slug} data-title={title} data-cat={cat}>
     <Header />
     <main class="home">
       <slot />
     </main>
     <Footer />
     <script src="/vendor/bootstrap.bundle.min.js" defer></script>
+    <script src="/scripts/views.js" defer></script>
   </body>
 </html>
