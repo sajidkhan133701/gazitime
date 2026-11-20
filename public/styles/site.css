@@ -1133,3 +1133,20 @@ html, body { overflow-x: clip; }
 .area-lead h2 a { color: inherit; }
 .area-lead h2 a:hover { color: var(--secondary-color); }
 @media (max-width: 767.98px) { .area-lead h2 { font-size: 20px; } }
+
+/* ---------- area directory ---------- */
+.area-block { border-bottom: 1px solid #ececec; padding: 16px 0; }
+.area-block__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.area-block__head h2 { font-size: 20px; font-weight: 700; margin: 0; }
+.area-block__head h2 a { color: inherit; }
+.area-block__head h2 a:hover { color: var(--secondary-color); }
+.area-count { font-size: 13px; color: #868e96; white-space: nowrap; }
+.area-unions { display: flex; flex-wrap: wrap; gap: 6px; }
+.union-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; padding: 5px 12px; border-radius: 50rem; border: 1px solid #e0e0e0; background: #f8f9fa; color: #212529; }
+.union-chip span { background: var(--secondary-color); color: #fff; font-size: 11px; border-radius: 50rem; padding: 0 6px; }
+.union-chip:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
+.union-chip.is-empty { color: #adb5bd; background: transparent; border-style: dashed; }
+[data-bs-theme="dark"] .area-block { border-bottom-color: #2a3037; }
+[data-bs-theme="dark"] .union-chip { background: #1e2228; border-color: #3a4149; color: #e9ecef; }
+[data-bs-theme="dark"] .union-chip.is-empty { background: transparent; color: #6b7681; }
+[data-bs-theme="dark"] .area-block__head h2 { color: #e9ecef; }

@@ -1,0 +1,197 @@
+[
+  {
+    "slug": "fulbaria",
+    "upazila": "kaliakair",
+    "name": "ফুলবাড়িয়া"
+  },
+  {
+    "slug": "chapair",
+    "upazila": "kaliakair",
+    "name": "চাপাইর"
+  },
+  {
+    "slug": "boali",
+    "upazila": "kaliakair",
+    "name": "বোয়ালী"
+  },
+  {
+    "slug": "mauchak",
+    "upazila": "kaliakair",
+    "name": "মৌচাক"
+  },
+  {
+    "slug": "sreepholtoli",
+    "upazila": "kaliakair",
+    "name": "শ্রীফলতলী"
+  },
+  {
+    "slug": "ataboh",
+    "upazila": "kaliakair",
+    "name": "আটাবহ"
+  },
+  {
+    "slug": "sutrapur",
+    "upazila": "kaliakair",
+    "name": "সূত্রাপুর"
+  },
+  {
+    "slug": "dhaljora",
+    "upazila": "kaliakair",
+    "name": "ঢালজোড়া"
+  },
+  {
+    "slug": "modhyapara",
+    "upazila": "kaliakair",
+    "name": "মধ্যপাড়া"
+  },
+  {
+    "slug": "tumulia",
+    "upazila": "kaliganj",
+    "name": "তুমুলিয়া"
+  },
+  {
+    "slug": "moktarpur",
+    "upazila": "kaliganj",
+    "name": "মোক্তারপুর"
+  },
+  {
+    "slug": "nagri",
+    "upazila": "kaliganj",
+    "name": "নাগরী"
+  },
+  {
+    "slug": "boktarpur",
+    "upazila": "kaliganj",
+    "name": "বক্তারপুর"
+  },
+  {
+    "slug": "jangalia",
+    "upazila": "kaliganj",
+    "name": "জাঙ্গালিয়া"
+  },
+  {
+    "slug": "bahadurshadi",
+    "upazila": "kaliganj",
+    "name": "বাহাদুরশাদী"
+  },
+  {
+    "slug": "jamalpur",
+    "upazila": "kaliganj",
+    "name": "জামালপুর"
+  },
+  {
+    "slug": "kapasia",
+    "upazila": "kapasia",
+    "name": "কাপাসিয়া"
+  },
+  {
+    "slug": "targaon",
+    "upazila": "kapasia",
+    "name": "তরগাঁও"
+  },
+  {
+    "slug": "rayed",
+    "upazila": "kapasia",
+    "name": "রায়েদ"
+  },
+  {
+    "slug": "singhasree",
+    "upazila": "kapasia",
+    "name": "সিংহশ্রী"
+  },
+  {
+    "slug": "barishab",
+    "upazila": "kapasia",
+    "name": "বারিষাব"
+  },
+  {
+    "slug": "tok",
+    "upazila": "kapasia",
+    "name": "টোক"
+  },
+  {
+    "slug": "karihata",
+    "upazila": "kapasia",
+    "name": "কড়িহাতা"
+  },
+  {
+    "slug": "sonmania",
+    "upazila": "kapasia",
+    "name": "সন্মানিয়া"
+  },
+  {
+    "slug": "ghagotia",
+    "upazila": "kapasia",
+    "name": "ঘাগটিয়া"
+  },
+  {
+    "slug": "duragapur",
+    "upazila": "kapasia",
+    "name": "দূর্গাপুর"
+  },
+  {
+    "slug": "chandpur",
+    "upazila": "kapasia",
+    "name": "চাঁদপুর"
+  },
+  {
+    "slug": "mirzapur",
+    "upazila": "sadar",
+    "name": "মির্জাপুর"
+  },
+  {
+    "slug": "bhawalgor",
+    "upazila": "sadar",
+    "name": "ভাওয়াল গড়"
+  },
+  {
+    "slug": "pirujali",
+    "upazila": "sadar",
+    "name": "পিরুজালী"
+  },
+  {
+    "slug": "baria",
+    "upazila": "sadar",
+    "name": "বাড়ীয়া"
+  },
+  {
+    "slug": "maona",
+    "upazila": "sreepur",
+    "name": "মাওনা"
+  },
+  {
+    "slug": "gazipur",
+    "upazila": "sreepur",
+    "name": "গাজীপুর"
+  },
+  {
+    "slug": "telhati",
+    "upazila": "sreepur",
+    "name": "তেলিহাটী"
+  },
+  {
+    "slug": "barmi",
+    "upazila": "sreepur",
+    "name": "বরমী"
+  },
+  {
+    "slug": "kawraid",
+    "upazila": "sreepur",
+    "name": "কাওরাইদ"
+  },
+  {
+    "slug": "gosinga",
+    "upazila": "sreepur",
+    "name": "গোসিংগা"
+  },
+  {
+    "slug": "rajabari",
+    "upazila": "sreepur",
+    "name": "রাজাবাড়ী"
+  },
+  {
+    "slug": "prohladpur",
+    "upazila": "sreepur",
+    "name": "প্রহলাদপুর"
+  }
+]

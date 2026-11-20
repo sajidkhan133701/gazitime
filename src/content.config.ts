@@ -18,6 +18,8 @@ const blog = defineCollection({
     breaking: z.boolean().default(false),
     updatedAt: z.coerce.date().optional(),
     upazila: z.string().optional(),
+    unionSlug: z.string().optional(),
+    village: z.string().optional(),
   }),
 });
 

@@ -1,0 +1,82 @@
+---
+import Base from '../../../layouts/Base.astro';
+import areas from '../../../data/areas.json';
+import unions from '../../../data/unions.json';
+import { allPosts, href, img } from '../../../lib/feed';
+import { bnDate } from '../../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = await allPosts();
+  const paths: any[] = [];
+
+  for (const u of unions) {
+    const posts = all.filter((p) => (p.data as any).unionSlug === u.slug);
+    // a union page exists only when that union has real reporting
+    if (posts.length === 0) continue;
+    const area = areas.find((a) => a.slug === u.upazila);
+    if (!area) continue;
+    paths.push({ params: { area: area.slug, union: u.slug }, props: { area, union: u, posts } });
+  }
+
+  return paths;
+}
+
+const { area, union, posts } = Astro.props as any;
+const [lead, ...rest] = posts;
+const bn = (n: number) => String(n).replace(/\d/g, (x) => '০১২৩৪৫৬৭৮৯'[+x]);
+---
+
+<Base
+  title={`${union.name} ইউনিয়নের খবর`}
+  seoTitle={`${union.name} ইউনিয়নের খবর — ${area.name} | গাজী টাইম`}
+  description={`${union.name} ইউনিয়ন, ${area.name} উপজেলার সর্বশেষ খবর ও স্থানীয় সংবাদ — গাজী টাইম।`}
+  keywords={[`${union.name} ইউনিয়ন`, `${union.name} খবর`, `${area.name} খবর`]}
+>
+  <section class="listing-wrap">
+    <div class="container">
+      <nav class="crumbs" aria-label="ব্রেডক্রাম্ব">
+        <a href="/">হোম</a>
+        <span aria-hidden="true">›</span>
+        <a href="/gazipur/">গাজীপুর</a>
+        <span aria-hidden="true">›</span>
+        <a href={`/gazipur/${area.slug}/`}>{area.name}</a>
+        <span aria-hidden="true">›</span>
+        <span class="crumbs__here">{union.name}</span>
+      </nav>
+
+      <div class="listing-head">
+        <h1>{union.name} ইউনিয়নের খবর</h1>
+        <p class="listing-sub">{area.name} উপজেলার {union.name} ইউনিয়নের স্থানীয় সংবাদ — {bn(posts.length)}টি প্রতিবেদন।</p>
+      </div>
+
+      {lead && (
+        <article class="area-lead mb-4">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <a href={href(lead)}><img src={img(lead)} alt={lead.data.title} width="760" height="430" /></a>
+            </div>
+            <div class="col-lg-5">
+              <h2><a href={href(lead)}>{lead.data.title}</a></h2>
+              {lead.data.dek && <p class="listing-dek">{lead.data.dek}</p>}
+              <div class="listing-meta"><span class="listing-cat">{bnDate(lead.data.date)}</span></div>
+            </div>
+          </div>
+        </article>
+      )}
+
+      {rest.map((p: any) => (
+        <article class="listing-row">
+          <div class="row g-3 align-items-start">
+            <div class="col-lg-9 col-8">
+              <h3><a href={href(p)}>{p.data.title}</a></h3>
+              <div class="listing-meta"><span class="listing-cat">{bnDate(p.data.date)}</span></div>
+            </div>
+            <div class="col-lg-3 col-4">
+              <a href={href(p)}><img src={img(p)} alt={p.data.title} width="240" height="144" loading="lazy" /></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>
