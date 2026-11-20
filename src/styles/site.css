@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Gazitime — site-level styles on top of the newspaper theme
+   ========================================================================== */
+
+:root {
+  --secondary-color: #f68d23;
+  --Hover-color: #f68d23;
+  --font-color: #1c1b1b;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ---------- brand logo (text) ---------- */
+.brand-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.brand-logo__word {
+  font-family: 'Kalpurush', sans-serif;
+  font-size: 3.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #1c1b1b;
+}
+
+.brand-logo__word span {
+  color: var(--secondary-color);
+}
+
+.brand-logo__tag {
+  margin-top: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1c1b1b;
+  line-height: 1.2;
+}
+
+.main-logo .brand-logo {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* mobile logo bar */
+.mobile-logo-bar .brand-logo__word {
+  font-size: 2rem;
+}
+
+.mobile-logo-bar .brand-logo__tag {
+  display: none;
+}
+
+.mobile-logo-bar {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-logo-bar .main-logo {
+  display: flex;
+  align-items: center;
+}
+
+/* nav scroll strip */
+.custom-navbar .api-menu {
+  margin-bottom: 0;
+}
+
+/* dark theme fixes for our text logo */
+[data-bs-theme='dark'] .brand-logo__word,
+[data-bs-theme='dark'] .brand-logo__tag {
+  color: #fff;
+}
+
+[data-bs-theme='dark'] .mobile-logo-bar {
+  background: #101010;
+  border-bottom-color: #222;
+}
+
+/* ---------- ad placeholders ---------- */
+.ad-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d9d9;
+  color: #6c757d;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.ad-box--300x250 {
+  aspect-ratio: 300 / 250;
+}
+
+.ad-box--970x90 {
+  height: 90px;
+  max-width: 970px;
+  margin: 0 auto;
+}
+
+.ad-box--728x68 {
+  height: 68px;
+  max-width: 728px;
+  margin: 0 auto;
+}
+
+.ad-box--300x100 {
+  height: 100px;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* ---------- image fallback ---------- */
+.news-card img,
+.hero-img img,
+.card-img-top img {
+  background: #eee;
+}
+
+/* ---------- search page ---------- */
+.search-hero {
+  padding: 34px 0 26px;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.search-hero h1 {
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  max-width: 720px;
+}
+
+.search-form input[type='search'] {
+  flex: 1;
+  height: 46px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 17px;
+}
+
+.search-form button {
+  height: 46px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--secondary-color);
+  color: #fff;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-empty {
+  padding: 40px 0;
+  font-size: 18px;
+  color: #666;
+}
+
+/* ---------- article body ---------- */
+.details-content p {
+  font-size: 18px;
+  line-height: 1.85;
+  margin-bottom: 18px;
+  color: #222;
+}
+
+.details-content h2,
+.details-content h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 26px 0 12px;
+}
+
+.details-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0 18px;
+}
+
+.details-content ul,
+.details-content ol {
+  padding-left: 22px;
+  margin-bottom: 18px;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.details-content blockquote {
+  border-left: 4px solid var(--secondary-color);
+  padding: 8px 0 8px 16px;
+  margin: 18px 0;
+  font-size: 19px;
+  color: #333;
+}
+
+/* share row */
+.share-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.share-row a {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  background: #495057;
+}
+
+.share-row a.fb {
+  background: #1877f2;
+}
+
+.share-row a.tw {
+  background: #000;
+}
+
+.share-row a.wa {
+  background: #25d366;
+}
+
+.share-row a.mail {
+  background: #6c757d;
+}
+
+/* misc */
+.eyebrow {
+  display: inline-block;
+  font-size: 17px;
+  font-weight: 600;
+  color: #1c1b1b;
+  position: relative;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.eyebrow:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--secondary-color);
+}
+
+.subcat-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 15px;
+  padding: 10px 0 12px;
+  border-bottom: 3px solid var(--secondary-color);
+  margin-bottom: 24px;
+}
+
+.subcat-links a {
+  color: #1c1b1b;
+  font-weight: 500;
+}
+
+.meta-info {
+  font-size: 14px;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 991.98px) {
+  .brand-logo__word {
+    font-size: 2.6rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .ad-box--970x90 {
+    height: 60px;
+  }
+}

@@ -1,0 +1,13 @@
+---
+const { title, href, light = false, py = 'py-3' } = Astro.props;
+---
+
+<div class={`news-section-line px-0 ${py}`}>
+  <div class="d-flex align-items-center">
+    <div class={`news-title-more ${light ? 'text-white' : ''}`}>
+      <h2><a href={href ?? '#'}>{title}</a></h2>
+    </div>
+    <div class={`news-line ${light ? 'video-line' : ''}`}></div>
+    <a class={`more-link fw-bold ${light ? 'text-white' : ''}`} href={href ?? '#'}>আরো <i class="fa-solid fa-angle-right"></i></a>
+  </div>
+</div>

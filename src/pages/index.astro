@@ -1,302 +1,868 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
 import homepage from '../data/homepage.json';
 import { bnDate, catName } from '../lib/utils';
 
-const posts = (await getCollection('blog'))
+const all = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const byId = new Map(posts.map((p) => [p.id, p]));
-const norm = (v: string) => v.replace(/^.*\//, '').replace(/\.md$/, '');
-const pick = (v: string) => byId.get(norm(v));
+const pick = (id?: string) => all.find((p) => p.id === id);
+const byCat = (slug: string) => all.filter((p) => p.data.category === slug);
 
-const lead = (homepage.lead ? pick(homepage.lead) : undefined) ?? posts[0];
-const breaking = (homepage.breaking ?? []).map(pick).filter((p) => p && p.id !== lead.id);
-const heroCards = (homepage.heroCards ?? []).map(pick).filter(Boolean).slice(0, 4);
-const heroPhotos = ((homepage as any).leadPhotos ?? []).map(pick).filter(Boolean).slice(0, 2);
-const heroText = (homepage.heroText ?? []).map(pick).filter(Boolean).slice(0, 3);
-const railVideo = homepage.railVideo ? pick(homepage.railVideo) : undefined;
-const opinion = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 3);
+const img = (p: any) => p?.data?.image ?? '/images/city.jpg';
+const href = (p: any) => `/news/${p.id}/`;
 
-const limits: Record<string, number> = { split: 5, cards3: 3, cards4: 4, video: 5, shorts: 6, district: 5 };
+const lead = pick(homepage.lead) ?? all[0];
+const heroSide = all.filter((p) => p.id !== lead.id).slice(0, 3);
+const midRow1 = (homepage.heroText ?? []).map(pick).filter(Boolean) as any[];
+const photoCards = (homepage.heroCards ?? []).map(pick).filter(Boolean).slice(0, 4) as any[];
+const midRow2 = (homepage.breaking ?? []).map(pick).filter((p) => p && p.id !== lead.id).slice(0, 3) as any[];
+const railVideo = pick(homepage.railVideo);
 
-const sections = (homepage.sections ?? [])
-  .map((s: any) => {
-    if (s.layout === 'cols') {
-      const columns = (s.columns ?? [])
-        .map((c: any) => ({
-          title: c.title,
-          items: (c.items ?? []).map(pick).filter(Boolean).slice(0, 4),
-        }))
-        .filter((c: any) => c.items.length > 0);
-      return { ...s, items: columns.flatMap((c: any) => c.items), columns };
-    }
-    const manual = (s.items ?? []).map(pick).filter(Boolean);
-    const auto = s.category ? posts.filter((p) => p.data.category === s.category) : [];
-    const merged = manual.length ? manual : auto;
-    const unique = merged.filter((p, i, arr) => arr.findIndex((x) => x.id === p.id) === i);
-    const limit = limits[s.layout] ?? 3;
-    // top up so every block looks full, like a printed page
-    const filled = [...unique];
-    for (const p of posts) {
-      if (filled.length >= limit) break;
-      if (!filled.some((x) => x.id === p.id)) filled.push(p);
-    }
-    return { ...s, items: filled.slice(0, limit) };
-  })
-  .filter((s) => s.items.length > 0);
+const intlCat = byCat('international');
+const intlTop = intlCat.slice(0, 3);
+const intlList = intlCat.slice(3, 7);
+
+const selected = (homepage.sections ?? [])
+  .find((s: any) => Array.isArray(s.items) && s.items.length >= 2);
+const selectedBase = selected ? (selected.items as string[]).map(pick).filter(Boolean) : [];
+const selectedItems = [...selectedBase, ...all.filter((p) => !selectedBase.some((x: any) => x.id === p.id))].slice(0, 6);
+
+const opinionItems = (homepage.opinion ?? []).map(pick).filter(Boolean).slice(0, 4) as any[];
+
+const sportsCat = byCat('sports');
+const sportsTop = sportsCat.slice(0, 2);
+const sportsList = sportsCat.slice(2, 6);
+
+const videoBlock = (homepage.sections ?? []).find((s: any) => s.layout === 'video');
+const videoItems = (videoBlock?.items ?? []).map(pick).filter(Boolean).slice(0, 5) as any[];
+
+const shortsBlock = (homepage.sections ?? []).find((s: any) => s.layout === 'shorts');
+const shortsItems = (shortsBlock?.items ?? []).map(pick).filter(Boolean).slice(0, 6) as any[];
+
+const politicsCat = byCat('national');
+const politicsTop = politicsCat.slice(0, 3);
+const politicsList = politicsCat.slice(3, 7);
+
+const econCat = byCat('economy');
+const econTop = econCat.slice(0, 4);
+
+const specialCat = byCat('special');
+const specialTop = specialCat.slice(0, 3);
+
+const countryCat = byCat('gazipur');
+const countryTop = countryCat.slice(0, 3);
+
+const lawCat = byCat('special');
+const educationCat = byCat('education');
+const nationalCat = byCat('national');
+
+const lawCols = [
+  { title: 'আইন ও বিচার', href: '/category/special/', items: lawCat.slice(0, 4) },
+  { title: 'অপরাধ', href: '/category/national/', items: nationalCat.slice(5, 9) },
+  { title: 'দুর্ঘটনা', href: '/category/national/', items: nationalCat.slice(9, 13) },
+  { title: 'শিক্ষাঙ্গন', href: '/category/education/', items: educationCat.slice(0, 4) },
+];
+
+const entCat = byCat('entertainment');
+const entTop = entCat.slice(0, 5);
+
+const lifeCat = byCat('lifestyle');
+const lifeTop = lifeCat.slice(0, 5);
+
+const featureCols = [
+  { title: 'ফিচার', href: '/category/special/', items: specialCat.slice(3, 7) },
+  { title: 'শিল্প ও সাহিত্য', href: '/category/lifestyle/', items: lifeCat.slice(5, 9) },
+  { title: 'ধর্ম ও দর্শন', href: '/category/opinion/', items: byCat('opinion').slice(0, 4) },
+];
 ---
 
 <Base>
-  <div class="container">
-    <div class="hero">
-      <div class="hero-main">
-        <div class="hero-top">
-          <article class="lead-copy">
-            <h1 class="lead-title"><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h1>
-            {lead.data.dek && <p class="lead-dek">{lead.data.dek}</p>}
-          </article>
+<!-- ================= HERO ================= -->
+<section class="hero-section pb-lg-5 pb-md-4 pb-3 mb-md-2">
+    <div class="container">
+      <div class="row gx-5 mt-lg-4 mt-md-2 mt-1">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="col-lg-8 col-md-6">
+              <div class="row hero-top">
+                <div class="col-lg-5">
+                  <div class="hero-content">
+                    <h3 class="fs-nd-lead"><a href={href(lead)}>{lead.data.title}</a></h3>
+                    {lead.data.dek && <p>{lead.data.dek}</p>}
+                  </div>
+                </div>
+                <div class="col-lg-7 hero-img">
+                  <a href={href(lead)}>
+                    <img class="img-fluid" src={img(lead)} alt={lead.data.imageAlt ?? lead.data.title} width="800" height="450" />
+                  </a>
+                </div>
+              </div>
+            </div>
 
-          <div class="lead-photos">
-            {heroPhotos.map((p) => (
-              <a href={`/news/${p.id}/`}>
-                {p.data.image && (
-                  <img
-                    src={p.data.image}
-                    alt={p.data.imageAlt ?? p.data.title}
-                    width="150"
-                    height="200"
-                    loading="eager"
-                  />
-                )}
-              </a>
-            ))}
+            <div class="col-lg-4 col-md-6 mt-lg-0 mt-md-0 mt-4">
+              {heroSide.map((p) => (
+                <div class="news-card">
+                  <div class="row">
+                    <div class="col-lg-8 col-md-7 col-8">
+                      <h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4>
+                    </div>
+                    <div class="col-lg-4 col-md-5 col-4">
+                      <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="200" /></a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <aside class="hero-list">
-            {breaking.slice(0, 3).map((p) => (
-              <article>
-                <a href={`/news/${p.id}/`}>
-                  <h4>{p.data.title}</h4>
+          <div class="hero-middle-card">
+            <div class="row justify-content-between">
+              {midRow1.map((p, i) => (
+                <div class={`col-lg-4 col-md-6 ${i === 0 ? 'ps-lg-0' : ''} ${i < 2 ? 'border-end border-2' : ''}`}>
+                  <div class="bg-light">
+                    <div class="news-card">
+                      <div class="row">
+                        <div class="col-lg-8 col-md-7 col-8">
+                          <h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4>
+                        </div>
+                        <div class="col-lg-4 col-md-5 col-4">
+                          <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="200" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="hero-middle">
+            <div class="hero-content-card">
+              <div class="row">
+                {photoCards.map((p, i) => (
+                  <div class={`col-lg-3 col-md-6 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-3 ${i < 3 ? 'border-end border-2' : ''}`}>
+                    <div class="news-card">
+                      <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="400" height="225" /></a>
+                      <h3><a href={href(p)}>{p.data.title}</a></h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-middle-card border-0 pt-0">
+            <div class="row justify-content-between">
+              {midRow2.map((p, i) => (
+                <div class={`col-lg-4 col-md-6 ${i === 0 ? 'ps-lg-0' : ''}`}>
+                  <div class={i < 2 ? 'border-end border-2' : ''}>
+                    <div class="news-card">
+                      <div class="row">
+                        <div class="col-lg-8 col-md-7 col-8">
+                          <h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4>
+                        </div>
+                        <div class="col-lg-4 col-md-5 col-4">
+                          <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="200" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 border-start border-2 mt-lg-0 mt-md-0 mt-4 gx-0 gx-md-3">
+          {railVideo && (
+            <div class="card border-0 bg-transparent">
+              <div class="position-relative">
+                <a class="card-img-top rounded-4 shadow-sm" href={href(railVideo)} style="overflow:hidden;display:block">
+                  <img class="img-fluid" src={img(railVideo)} alt={railVideo.data.title} width="336" height="220" />
                 </a>
-                {p.data.image && (
-                  <img src={p.data.image} alt="" width="88" height="62" loading="lazy" />
-                )}
-              </article>
-            ))}
-          </aside>
-        </div>
+                <a class="position-absolute top-50 start-50 translate-middle text-decoration-none" href={href(railVideo)} aria-label="ভিডিও">
+                  <div class="rounded-circle bg-danger bg-opacity-75 d-flex align-items-center justify-content-center" style="width:56px;height:56px">
+                    <i class="bi bi-play-fill text-white fs-2 ms-1"></i>
+                  </div>
+                </a>
+              </div>
+              <div class="card-body px-0 pt-3">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-danger rounded-pill px-2 py-1 fs-7"><i class="bi bi-circle-fill fs-8 me-1"></i>Live</span>
+                  <h6 class="card-title fw-bold text-dark mb-0 text-truncate"><a href={href(railVideo)}>{railVideo.data.title}</a></h6>
+                </div>
+              </div>
+            </div>
+          )}
 
-        <div class="hero-strip">
-          {heroText.map((p) => (
-            <article>
-              <a href={`/news/${p.id}/`}>
-                <h4>{p.data.title}</h4>
-              </a>
-              {p.data.image && <img src={p.data.image} alt="" width="80" height="58" loading="lazy" />}
-            </article>
-          ))}
-        </div>
-
-        <div class="hero-imgs">
-          {heroCards.map((p) => (
-            <a href={`/news/${p.id}/`}>
-              {p.data.image && (
-                <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="260" height="160" loading="lazy" />
-              )}
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <aside class="hero-rail">
-        {railVideo && (
-          <div class="video-card">
-            <a href={`/news/${railVideo.id}/`} style="position:relative;display:block">
-              {railVideo.data.image && (
-                <img src={railVideo.data.image} alt={railVideo.data.imageAlt ?? railVideo.data.title} width="336" height="189" />
-              )}
-              <span class="play-badge"><span>▶</span></span>
-            </a>
-            <h4><a href={`/news/${railVideo.id}/`}>{railVideo.data.title}</a></h4>
+          <div class="right-ads border-0 mt-3">
+            <a class="ad-box ad-box--300x250" href="/contact/">বিজ্ঞাপন <small class="ms-1" style="font-size:12px">300 × 250</small></a>
           </div>
-        )}
-        <a class="ad-slot" href="/contact/">
-          বিজ্ঞাপনের জন্য যোগাযোগ করুন
-          <small>৩০০ × ২৫০</small>
-        </a>
-      </aside>
-    </div>
-  </div>
-
-  {opinion.length > 0 && (
-    <div class="opinion-strip">
-      <div class="container">
-        {opinion.map((p) => (
-          <a href={`/news/${p.id}/`}>
-            {p.data.title}
-            <span>{p.data.author}</span>
-          </a>
-        ))}
+        </div>
       </div>
     </div>
-  )}
+  </section>
 
-  {sections.map((s) => (
-    <section class={`section ${s.theme ?? ''}`}>
-      <div class="container">
-        <div class="section-head">
-          <h2>{s.title}</h2>
-          <span class="rule"></span>
-          {s.category && <a class="more" href={`/category/${s.category}/`}>আরও ›</a>}
-        </div>
+<!-- ================= INTERNATIONAL ================= -->
+<section class="international pb-lg-2 pb-md-2 pb-2 mb-lg-3 mb-md-2">
+  <div class="container">
+    <div class="international-section">
+      <div class="row">
+        <div class="col-lg-9 col-md-12 col-12">
+          <SectionHead title="আন্তর্জাতিক" href="/category/international/" py="py-0 mb-3" />
+          <div class="row mt-lg-3 mt-md-3 mt-2">
+            {intlTop.map((p, i) => (
+              <div class="col-lg-4 col-md-6 mb-lg-0 mb-md-3 mb-3">
+                <div class="international-grid-column">
+                  <div class="news-card">
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="400" height="266" /></a>
+                    <h3><a href={href(p)}>{p.data.title}</a></h3>
+                    {i === 0 && p.data.dek && <p class="card-text" style="font-size:15px;margin-top:6px">{p.data.dek}</p>}
+                    <div class="meta-info mt-2"><i class="bi bi-clock"></i> {bnDate(p.data.date)}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {s.layout === 'split' && (
-          <div class="split-1-3">
-            <article class="big-story">
-              <a href={`/news/${s.items[0].id}/`}>
-                {s.items[0].data.image && (
-                  <img
-                    src={s.items[0].data.image}
-                    alt={s.items[0].data.imageAlt ?? s.items[0].data.title}
-                    width="700"
-                    height="437"
-                    loading="lazy"
-                  />
-                )}
-                <h3>{s.items[0].data.title}</h3>
-              </a>
-              {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
-            </article>
+          <hr class="mt-2 mb-4" />
 
-            <div class="list-thumbs">
-              {s.items.slice(1).map((p) => (
-                <article>
-                  <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
-                  <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
+          <div class="row">
+            <div class="col-lg-6">
+              {intlList.slice(0, 2).map((p) => (
+                <article class="row mb-4 international-list-item">
+                  <div class="col-lg-5 col-md-5 col-5">
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="260" height="170" /></a>
+                  </div>
+                  <div class="col-lg-7 col-md-7 col-7 pt-lg-0 pt-md-0 pt-2">
+                    <h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4>
+                    <small class="text-muted">{bnDate(p.data.date)}</small>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div class="col-lg-6">
+              {intlList.slice(2, 4).map((p) => (
+                <article class="row mb-4 international-list-item">
+                  <div class="col-lg-5 col-md-5 col-5">
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="260" height="170" /></a>
+                  </div>
+                  <div class="col-lg-7 col-md-7 col-7 pt-lg-0 pt-md-0 pt-2">
+                    <h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4>
+                    <small class="text-muted">{bnDate(p.data.date)}</small>
+                  </div>
                 </article>
               ))}
             </div>
           </div>
-        )}
+        </div>
 
-        {s.layout === 'video' && (
-          <div class="video-band">
-            <article class="video-lead">
-              <a href={`/news/${s.items[0].id}/`} style="position:relative;display:block">
-                {s.items[0].data.image && (
-                  <img src={s.items[0].data.image} alt={s.items[0].data.imageAlt ?? s.items[0].data.title} width="720" height="405" loading="lazy" />
-                )}
-                <span class="play-badge"><span>▶</span></span>
-              </a>
-              <h3><a href={`/news/${s.items[0].id}/`}>{s.items[0].data.title}</a></h3>
-              {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
-            </article>
-            <div class="video-list">
-              {s.items.slice(1).map((p) => (
-                <a href={`/news/${p.id}/`} class="video-row">
-                  <span class="video-row__text">{p.data.title}</span>
-                  {p.data.image && <img src={p.data.image} alt="" width="120" height="68" loading="lazy" />}
-                </a>
+        <aside class="col-lg-3 col-md-12">
+          <div class="news-section-line px-0 py-2 mt-lg-0 mt-3 mb-2">
+            <div class="d-flex align-items-center">
+              <div class="news-title-more"><h2><a href="/category/international/">বিশ্ব মিডিয়া ও বাংলাদেশ</a></h2></div>
+              <div class="news-line"></div>
+            </div>
+          </div>
+
+          <div class="bangladesh-media row">
+            {intlList.slice(0, 2).map((p) => (
+              <div class="col-6">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="200" height="130" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="tranding-news mt-3">
+            <ul class="nav nav-pills mb-2" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabLatest" type="button">সর্বশেষ</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabPopular" type="button">জনপ্রিয়</button>
+              </li>
+            </ul>
+            <div class="tab-content border p-2">
+              <div class="tab-pane fade show active" id="tabLatest">
+                <ul class="list-unstyled mb-0">
+                  {all.slice(0, 5).map((p) => (
+                    <li class="d-flex gap-2 py-2 border-bottom">
+                      <span class="text-muted" style="font-size:13px">{new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false }).format(p.data.date)}</span>
+                      <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
+                    </li>
+                  ))}
+                </ul>
+                <div class="text-center mt-2">
+                  <a class="btn btn-sm btn-outline-secondary rounded-pill px-3" href="/latest/">আরো <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tabPopular">
+                <ul class="list-unstyled mb-0">
+                  {sportsCat.slice(0, 5).map((p) => (
+                    <li class="d-flex gap-2 py-2 border-bottom">
+                      <span class="text-muted" style="font-size:13px">{new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false }).format(p.data.date)}</span>
+                      <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SELECTED / OPINION ================= -->
+<section class="mb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <SectionHead title="নির্বাচিত" href="/latest/" />
+        <div class="election-card border-bottom pt-2">
+          <div class="row gx-3">
+            {selectedItems.slice(0, 3).map((p: any) => (
+              <div class="col-lg-4 col-4">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="169" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                  <div class="meta-info">{bnDate(p.data.date)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="election-card pt-4">
+          <div class="row gx-3">
+            {selectedItems.slice(3, 6).map((p: any) => (
+              <div class="col-lg-4 col-4">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="169" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                  <div class="meta-info">{bnDate(p.data.date)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <SectionHead title="মতামত" href="/category/opinion/" py="py-lg-2 py-2" />
+        <div class="opinion-card">
+          {opinionItems.map((p: any) => (
+            <div class="news-card">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  <a href={href(p)}>
+                    <img class="img-fluid rounded-circle" src={img(p)} alt={p.data.author ?? p.data.title} width="70" height="70" style="aspect-ratio:1/1;object-fit:cover" />
+                  </a>
+                </div>
+                <div class="col-9">
+                  <h5 style="font-size:16px;font-weight:600"><a href={href(p)}>{p.data.title}</a></h5>
+                  <small class="text-muted">{p.data.author}</small>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="election-right mt-lg-5 mt-md-4 mt-3">
+          <a class="ad-box ad-box--300x250" href="/contact/">বিজ্ঞাপন <small class="ms-1" style="font-size:12px">300 × 250</small></a>
+          <div class="mt-3">
+            {all.slice(6, 9).map((p) => (
+              <div class="news-card">
+                <div class="row">
+                  <div class="col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4></div>
+                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPORTS ================= -->
+<section class="sports-section">
+  <div class="container">
+    <div class="top-ads d-flex justify-content-center">
+      <a class="ad-box ad-box--728x68" href="/contact/">বিজ্ঞাপন</a>
+    </div>
+    <div class="row g-3">
+      <div class="col-lg-9">
+        <SectionHead title="খেলা" href="/category/sports/" />
+        <div class="sport-content">
+          <div class="row">
+            <div class="col-lg-6">
+              {sportsTop.slice(0, 1).map((p) => (
+                <div class="sport">
+                  <div class="news-card">
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="600" height="400" /></a>
+                    <h3><a href={href(p)}>{p.data.title}</a></h3>
+                    {p.data.dek && <p class="card-text" style="font-size:15px;color:#555">{p.data.dek}</p>}
+                  </div>
+                </div>
+              ))}
+              {sportsTop.slice(1, 2).map((p) => (
+                <div class="news-card">
+                  <div class="row">
+                    <div class="col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4></div>
+                    <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="200" height="130" /></a></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div class="col-lg-6">
+              {sportsList.map((p) => (
+                <div class="news-card">
+                  <div class="row">
+                    <div class="col-lg-8 col-md-7 col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4><small class="text-muted">{bnDate(p.data.date)}</small></div>
+                    <div class="col-lg-4 col-md-5 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="200" height="130" /></a></div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
-        )}
+        </div>
+      </div>
+      <aside class="col-lg-3 col-md-12 mt-lg-0">
+        <div class="d-flex justify-content-center mt-lg-5 mt-3">
+          <a class="ad-box ad-box--300x250" href="/contact/">বিজ্ঞাপন <small class="ms-1" style="font-size:12px">300 × 250</small></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
 
-        {s.layout === 'shorts' && (
-          <div class="shorts-row">
-            {s.items.map((p) => (
-              <a href={`/news/${p.id}/`} class="short-card">
-                {p.data.image && <img src={p.data.image} alt="" width="168" height="298" loading="lazy" />}
+<!-- ================= VIDEO ================= -->
+<section class="video mt-3 pt-3 pb-3">
+  <div class="container">
+    <div class="news-section-line px-0 pt-4 py-2">
+      <div class="d-flex align-items-center">
+        <div class="news-title-more text-white">
+          <h2><a class="text-white" href="/category/entertainment/">ভিডিও</a></h2>
+        </div>
+        <div class="news-line video-line"></div>
+        <a class="more-link fw-bold" href="/category/entertainment/">আরো <i class="fa-solid fa-angle-right"></i></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="video-tranding-news video-category-slider mb-md-0 mb-2">
+          <div class="tag-scroll">
+            <a class="carousel-cell nav-link fs-6 active" href="/category/entertainment/">সাক্ষাৎকার</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/sports/">প্রাইম টাইম</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/tech/">গ্লোবাল ভিউজ</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/special/">দিগন্ত বিশ্লেষণ</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/economy/">স্পেশাল টক</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/national/">টপ নিউজ</a>
+          </div>
+        </div>
+        {videoItems.slice(0, 1).map((p) => (
+          <article class="video-content mt-lg-2 mt-mb-2 mt-2 mb-lg-0 mb-md-4 mb-sm-2 mb-2">
+            <div class="video-item">
+              <a class="video-image position-relative d-block" href={href(p)}>
+                <img src={img(p)} alt={p.data.title} width="640" height="360" />
+                <span class="position-absolute top-50 start-50 translate-middle rounded-circle bg-danger d-flex align-items-center justify-content-center" style="width:64px;height:64px">
+                  <i class="bi bi-play-fill text-white fs-1 ms-1"></i>
+                </span>
+              </a>
+              <h4 class="mt-4 lh-sm"><a href={href(p)}>{p.data.title}</a></h4>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="video-right-card">
+          {videoItems.slice(1, 5).map((p) => (
+            <article class="video-card">
+              <div class="video-item">
+                <div class="row g-0">
+                  <div class="col-lg-4 col-md-4 col-4">
+                    <a class="position-relative d-block" href={href(p)}>
+                      <img src={img(p)} alt={p.data.title} width="200" height="112" />
+                      <span class="position-absolute top-50 start-50 translate-middle rounded-circle bg-danger d-flex align-items-center justify-content-center" style="width:32px;height:32px">
+                        <i class="bi bi-play-fill text-white"></i>
+                      </span>
+                    </a>
+                  </div>
+                  <div class="col-lg-8 col-md-8 col-8">
+                    <h4><a href={href(p)}>{p.data.title}</a></h4>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHORTS ================= -->
+<section class="mt-5 reals-section py-lg-4 py-md-3 py-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 d-flex">
+        <div class="bg-light p-3 w-100">
+          <div class="block-title mb-3">
+            <div class="block-title-line"></div>
+            <span class="block-title-text">শর্টস</span>
+            <div class="block-title-line"></div>
+          </div>
+          <div class="shorts-track" id="shortsTrack">
+            {shortsItems.map((p) => (
+              <a class="short-item" href={href(p)}>
+                <img src={img(p)} alt={p.data.title} width="180" height="300" />
                 <h4>{p.data.title}</h4>
               </a>
             ))}
           </div>
-        )}
+          <div class="shorts-nav">
+            <button class="short-prev" data-target="shortsTrack" aria-label="আগের"><i class="bi bi-chevron-left"></i></button>
+            <button class="short-next" data-target="shortsTrack" aria-label="পরের"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
 
-        {s.layout === 'district' && (
-          <>
-            <div class="chips">
-              {['গাজীপুর', 'টঙ্গী', 'কালিয়াকৈর', 'শ্রীপুর', 'কাপাসিয়া', 'সদর'].map((d) => (
-                <a href="/category/gazipur/">{d}</a>
-              ))}
-            </div>
-            <div class="split-1-3">
-              <article class="big-story">
-                <a href={`/news/${s.items[0].id}/`}>
-                  {s.items[0].data.image && (
-                    <img src={s.items[0].data.image} alt={s.items[0].data.imageAlt ?? s.items[0].data.title} width="700" height="394" loading="lazy" />
-                  )}
-                  <h3>{s.items[0].data.title}</h3>
-                </a>
-                {s.items[0].data.dek && <p class="dek">{s.items[0].data.dek}</p>}
-              </article>
-              <div class="list-thumbs">
-                {s.items.slice(1).map((p) => (
-                  <article>
-                    <h4><a href={`/news/${p.id}/`}>{p.data.title}</a></h4>
-                    <div class="meta-row">{catName(p.data.category)} · {bnDate(p.data.date)}</div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {s.layout === 'cols' && (
-          <div class="cols3">
-            {s.columns.map((c: any) => (
-              <div class="textlist">
-                <h4>{c.title}</h4>
-                <ul>
-                  {c.items.map((p: any) => (
-                    <li><a href={`/news/${p.id}/`}>{p.data.title}</a></li>
-                  ))}
-                </ul>
-              </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-md-2 mt-2 d-flex">
+        <div class="w-100 bg-white border d-flex flex-column">
+          <div class="bg-explainer text-white text-center py-3 fw-bold fs-5">
+            <i class="bi bi-lightbulb me-2"></i>দিগন্ত এক্সপ্লেইনার
+          </div>
+          <div class="p-3 d-flex flex-column flex-grow-1">
+            {all.slice(10, 11).map((p) => (
+              <>
+                <p class="fs-5 mb-1" style="font-size:18px;font-weight:600"><a href={href(p)}>{p.data.title}</a></p>
+                <p class="mb-2" style="font-size:14px;color:#666">{p.data.dek}</p>
+                <div class="mt-auto">
+                  <a class="fw-bold" href={href(p)} style="color:#f68d23">বিস্তারিত</a>
+                  <img class="img-fluid mt-2" src={img(p)} alt={p.data.title} width="300" height="170" />
+                </div>
+              </>
             ))}
           </div>
-        )}
-
-        {(s.layout === 'cards3' || s.layout === 'cards4') && (
-          <div class={s.layout === 'cards3' ? 'cards3' : 'cards4'}>
-            {s.items.map((p) => (
-              <article>
-                <a href={`/news/${p.id}/`}>
-                  {p.data.image && (
-                    <img src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width="400" height="300" loading="lazy" />
-                  )}
-                  <h4>{p.data.title}</h4>
-                </a>
-                {p.data.dek && s.layout === 'cards3' && (
-                  <p class="dek" style="font-size:14.5px;color:#555;margin:4px 0 0">{p.data.dek}</p>
-                )}
-              </article>
-            ))}
-          </div>
-        )}
+        </div>
       </div>
-    </section>
-  ))}
 
-  <section class="newsletter">
-    <div class="container">
-      <div>
-        <h2>সাপ্তাহিক সংবাদপত্র</h2>
-        <p>সপ্তাহের সেরা খবর সরাসরি আপনার ইমেইলে।</p>
-      </div>
-      <div>
-        <form action="https://formsubmit.co/hello@gazitime.online" method="POST">
-          <input type="hidden" name="_subject" value="Gazitime newsletter signup" />
-          <input type="hidden" name="_next" value="https://gazitime.online/?subscribed=1" />
-          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
-          <input type="email" name="email" required placeholder="আপনার ইমেইল" aria-label="ইমেইল" />
-          <button type="submit">সাবস্ক্রাইব</button>
-        </form>
-        <p style="font-size:12.5px;margin-top:8px">যেকোনো সময় আনসাবস্ক্রাইব করতে পারবেন।</p>
+      <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-md-2 mt-2 d-flex">
+        <div class="online-poll w-100">
+          <a class="ad-box ad-box--300x250" href="/contact/">বিজ্ঞাপন <small class="ms-1" style="font-size:12px">300 × 250</small></a>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ================= POLITICS + ECONOMY ================= -->
+<section class="political politics-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 col-md-12">
+        <SectionHead title="রাজনীতি" href="/category/national/" py="py-2" />
+        <div class="mt-2 mb-3 politics-category-slider">
+          <div class="tag-scroll">
+            {['জাতীয়', 'সংসদ', 'সরকার', 'দল', 'নির্বাচন', 'গাজীপুর', 'শিক্ষা'].map((t) => (
+              <a class="carousel-cell btn btn-tag rounded-pill" href="/category/national/">{t}</a>
+            ))}
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="row g-3">
+              {politicsTop.map((p) => (
+                <div class="col-lg-4 col-6">
+                  <div class="political-card-left">
+                    <div class="news-card">
+                      <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="300" /></a>
+                      <h3><a href={href(p)}>{p.data.title}</a></h3>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="list-group list-group-flush politics-side-list">
+              {politicsList.map((p) => (
+                <a class="list-group-item list-group-item-action py-2" href={href(p)} style="font-size:16px;line-height:1.5">
+                  {p.data.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="col-lg-3 col-md-12 col-sm-12">
+        <SectionHead title="অর্থনীতি" href="/category/economy/" py="py-2" />
+        <div class="finance-section">
+          {econTop.map((p) => (
+            <article class="border-bottom pb-2 my-2">
+              <div class="row align-items-center">
+                <div class="col-lg-7 col-md-9 col-8">
+                  <h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4>
+                </div>
+                <div class="col-lg-5 col-md-3 col-4">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPECIAL + INTERVIEW ================= -->
+<section class="mt-lg-4 mt-3">
+  <div class="container">
+    <div class="special-content">
+      <div class="row">
+        <div class="col-lg-9 col-md-12">
+          <SectionHead title="বিশেষ প্রতিবেদন" href="/category/special/" />
+          <div class="row">
+            <div class="col-lg-7">
+              {specialTop.slice(0, 1).map((p) => (
+                <article class="special-item">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="700" height="450" /></a>
+                  <h3 style="margin-top:10px"><a href={href(p)}>{p.data.title}</a></h3>
+                  {p.data.dek && <p>{p.data.dek}</p>}
+                </article>
+              ))}
+            </div>
+            <div class="col-lg-5">
+              {specialTop.slice(1).map((p) => (
+                <div class="news-card">
+                  <div class="row">
+                    <div class="col-lg-8 col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4><small class="text-muted">{bnDate(p.data.date)}</small></div>
+                    <div class="col-lg-4 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="150" height="110" /></a></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <SectionHead title="সাক্ষাৎকার" href="/category/opinion/" />
+          <div class="interview">
+            {byCat('opinion').slice(0, 3).map((p) => (
+              <div class="news-card">
+                <div class="row align-items-center">
+                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="90" /></a></div>
+                  <div class="col-8"><h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COUNTRY ================= -->
+<section class="country-section mt-4 mb-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <SectionHead title="সারাদেশ" href="/category/gazipur/" />
+        <form class="nationwide-searching mt-lg-2 mt-1" onsubmit="return false">
+          <div class="row g-2">
+            <div class="col-lg-3 col-6">
+              <select class="form-select"><option>বিভাগ</option><option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option><option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option><option>রংপুর</option><option>ময়মনসিংহ</option></select>
+            </div>
+            <div class="col-lg-3 col-6">
+              <select class="form-select"><option>জেলা</option><option>গাজীপুর</option><option>ঢাকা</option><option>টাঙ্গাইল</option><option>কিশোরগঞ্জ</option></select>
+            </div>
+            <div class="col-lg-3 col-6">
+              <select class="form-select"><option>উপজেলা</option><option>সদর</option><option>টঙ্গী</option><option>কালিয়াকৈর</option><option>শ্রীপুর</option><option>কাপাসিয়া</option></select>
+            </div>
+            <div class="col-lg-3 col-6">
+              <button class="btn btn-warning w-100 text-white" type="submit"><i class="bi bi-search me-1"></i> খুঁজুন</button>
+            </div>
+          </div>
+        </form>
+        <div class="row mt-3">
+          {countryTop.map((p) => (
+            <div class="col-lg-4 col-md-6 mb-3">
+              <div class="nationwide-left-card">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="400" height="266" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="chittagong-card">
+          <SectionHead title="গাজীপুর খবর" href="/category/gazipur/" py="py-2" />
+          {countryCat.slice(3, 6).map((p: any) => (
+            <div class="news-card">
+              <div class="row">
+                <div class="col-8"><h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4></div>
+                <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LAW 4 COLUMNS ================= -->
+<section class="law law-grid-section mt-4">
+  <div class="container">
+    <div class="row">
+      {lawCols.map((col) => (
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <SectionHead title={col.title} href={col.href} />
+          <div class="law-news-container">
+            {col.items.map((p: any, i: number) => (
+              <div class="news-item">
+                {i === 0 && (
+                  <>
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="400" height="266" /></a>
+                    <h3 class="news-title"><a href={href(p)}>{p.data.title}</a></h3>
+                  </>
+                )}
+                {i > 0 && (
+                  <div class="d-flex gap-2 py-2 border-bottom">
+                    <i class="bi bi-chevron-right mt-1" style="font-size:12px"></i>
+                    <a href={href(p)} style="font-size:15px;line-height:1.5">{p.data.title}</a>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ================= ENTERTAINMENT ================= -->
+<section class="entertainment mb-4">
+  <div class="container pb-4">
+    <SectionHead title="বিনোদন" href="/category/entertainment/" />
+    <div class="row">
+      <div class="col-lg-6 col-md-12">
+        <div class="shadow-none bg-transparent entertainment-left-card">
+          {entTop.slice(0, 1).map((p) => (
+            <div class="news-card">
+              <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="700" height="450" /></a>
+              <h3><a href={href(p)}>{p.data.title}</a></h3>
+              {p.data.dek && <p>{p.data.dek}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="entertainment-card">
+          <div class="row">
+            {entTop.slice(1, 5).map((p) => (
+              <div class="col-lg-6 col-6">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="169" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LIFESTYLE ================= -->
+<section class="lifestyle">
+  <div class="container">
+    <SectionHead title="লাইফস্টাইল" href="/category/lifestyle/" />
+    <div class="row">
+      <div class="col-lg-6 col-md-12">
+        {lifeTop.slice(0, 1).map((p) => (
+          <div class="news-card shadow-none bg-transparent">
+            <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="700" height="394" /></a>
+            <h3><a href={href(p)}>{p.data.title}</a></h3>
+            {p.data.dek && <p class="card-text">{p.data.dek}</p>}
+          </div>
+        ))}
+      </div>
+      <div class="col-lg-6">
+        <div class="entertainment-card">
+          <div class="row">
+            {lifeTop.slice(1, 5).map((p) => (
+              <div class="col-lg-6 col-6">
+                <div class="news-card">
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="300" height="200" /></a>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="features-section mt-lg-4 mt-md-3">
+  <div class="container">
+    <div class="row">
+      {featureCols.map((col) => (
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <SectionHead title={col.title} href={col.href} />
+          <div class="law-news-container border-0">
+            {col.items.map((p: any, i: number) => (
+              <div class="news-item">
+                {i === 0 && (
+                  <>
+                    <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="400" height="266" /></a>
+                    <h3 class="news-title"><a href={href(p)}>{p.data.title}</a></h3>
+                  </>
+                )}
+                {i > 0 && (
+                  <div class="d-flex gap-2 py-2 border-bottom">
+                    <i class="bi bi-chevron-right mt-1" style="font-size:12px"></i>
+                    <a href={href(p)} style="font-size:15px;line-height:1.5">{p.data.title}</a>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.shorts-nav button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const track = document.getElementById(btn.getAttribute('data-target')!);
+      if (!track) return;
+      const dir = btn.classList.contains('short-next') ? 1 : -1;
+      track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: 'smooth' });
+    });
+  });
+</script>
 </Base>

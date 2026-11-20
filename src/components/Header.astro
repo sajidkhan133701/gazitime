@@ -1,80 +1,204 @@
 ---
+import { getCollection } from 'astro:content';
 import site from '../data/site.json';
 import categories from '../data/categories.json';
 import Logo from './Logo.astro';
 
 const path = Astro.url.pathname;
-const nav = categories;
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const opinionPosts = posts.filter((p) => p.data.category === 'opinion').slice(0, 3);
+const sliderPosts = opinionPosts.length ? opinionPosts : posts.slice(0, 3);
+
 const today = new Intl.DateTimeFormat('bn-BD', {
   weekday: 'long',
   day: 'numeric',
   month: 'long',
   year: 'numeric',
 }).format(new Date());
+
+const nav = [
+  { name: 'হোম', href: '/' },
+  { name: 'সর্বশেষ', href: '/latest/' },
+  { name: 'আজকের পত্রিকা', href: '/archive/' },
+  ...categories.map((c) => ({ name: c.name, href: `/category/${c.slug}/` })),
+];
+
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
 ---
 
-<div class="masthead">
+<section class="mobile-logo-bar d-lg-none">
   <div class="container">
-    <div class="mast-side">
-      <span class="mast-date">{today}</span>
-      <span class="mast-links">
-        <a href="/about/">ই-পেপার</a>
-        <span>|</span>
-        <a href="/category/special/">আর্কাইভ</a>
-      </span>
-    </div>
-
-    <div class="mast-center">
-      <Logo />
-    </div>
-
-    <div class="mast-side right">
-      <a href={`mailto:${site.email}`} class="icon-btn" aria-label="ইমেইল">✉</a>
-      <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
+    <div class="row d-flex justify-content-between align-items-center">
+      <div class="col-9">
+        <div class="main-logo">
+          <Logo size="sm" />
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="mobile-header-icons d-flex justify-content-end align-items-center">
+          <button class="icon-btn theme-toggle-btn border-0 bg-transparent" aria-label="থিম">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a class="icon-btn" href="/search/" aria-label="খুঁজুন"><i class="fa-solid fa-magnifying-glass"></i></a>
+          <button class="icon-btn border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#megaModal" aria-label="মেনু">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<nav class="nav" aria-label="প্রধান মেনু">
+<section class="top-header d-none d-lg-block">
   <div class="container">
-    <div class="nav-links">
-      <a href="/" aria-current={path === '/' ? 'page' : undefined}>হোম</a>
-      {nav.map((c) => (
-        <a href={`/category/${c.slug}/`} aria-current={path.startsWith(`/category/${c.slug}`) ? 'page' : undefined}>
-          {c.name}
-        </a>
-      ))}
-    </div>
-    <div class="nav-icons">
-      <a class="icon-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gazitime.online" target="_blank" rel="noopener" aria-label="ফেসবুকে শেয়ার">f</a>
-      <a class="icon-btn x" href="https://twitter.com/intent/tweet?url=https://gazitime.online" target="_blank" rel="noopener" aria-label="এক্সে শেয়ার">𝕏</a>
-      <button class="icon-btn" aria-label="মেনু" id="mnav-btn">☰</button>
-      <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
+    <div class="row justify-content-between">
+      <div class="col-lg-3 d-flex flex-column justify-content-end">
+        <div class="top-dates">
+          <div class="date-text"><i class="bi bi-calendar3"></i> {today}</div>
+          <div class="quick-links">
+            <a href="/archive/">ই-পেপার</a> |<a href="/archive/"> আর্কাইভ</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 text-center my-0 my-lg-0">
+        <div class="main-logo d-lg-block">
+          <h1><Logo size="lg" /></h1>
+        </div>
+      </div>
+
+      <div class="col-lg-3 d-lg-block">
+        <div class="right-slider d-flex justify-content-end">
+          <div id="headerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+            <div class="carousel-indicators">
+              {sliderPosts.map((_, i) => (
+                <button type="button" data-bs-target="#headerCarousel" data-bs-slide-to={i} class={i === 0 ? 'active' : ''} aria-label={`Slide ${i + 1}`} />
+              ))}
+            </div>
+            <div class="carousel-inner hidden">
+              {sliderPosts.map((p, i) => (
+                <div class={`carousel-item ${i === 0 ? 'active' : ''}`}>
+                  <a class="slider-image-text d-flex justify-content-end" href={`/news/${p.id}/`}>
+                    <h3>{p.data.title}</h3>
+                    {p.data.image && <img alt={p.data.imageAlt ?? p.data.title} width="300" height="250" class="d-block" style="width:130px;height:70px;object-fit:cover" src={p.data.image} />}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</nav>
+</section>
 
-<div class="mobile-bar">
-  <button class="icon-btn" aria-label="মেনু" id="mnav-btn-m">☰</button>
-  <Logo size="sm" />
-  <a href="/search/" class="icon-btn" aria-label="খুঁজুন">⌕</a>
-</div>
+<section class="navbar-area sticky-top">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+      <div class="col-lg-9 col-12">
+        <nav class="navbar static-top">
+          <div class="custom-navbar">
+            <div class="scrollable-menu" id="menuContainer">
+              <ul class="api-menu d-flex list-unstyled align-items-center">
+                {nav.map((n) => (
+                  <li class="nav-item">
+                    <a class={`nav-link-item ${isActive(n.href) ? 'active' : ''}`} href={n.href}>{n.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
 
-<nav class="mobile-nav" id="mnav" aria-label="মোবাইল মেনু">
-  <a href="/" aria-current={path === '/' ? 'page' : undefined}>হোম</a>
-  {nav.map((c) => (
-    <a href={`/category/${c.slug}/`} aria-current={path.startsWith(`/category/${c.slug}`) ? 'page' : undefined}>
-      {c.name}
-    </a>
-  ))}
-</nav>
+      <div class="header-actions col-lg-3 d-none d-lg-flex">
+        <div class="left-tools">
+          <button id="theme-toggle" class="btn theme-toggle-btn" aria-label="থিম">
+            <i id="theme-icon" class="fa-solid fa-moon theme-btn theme-toggle-icon"></i>
+          </button>
+        </div>
+        <div class="right-tools">
+          <a href="https://www.facebook.com/" class="social-icon facebook" target="_blank" rel="noopener noreferrer" aria-label="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.youtube.com/" class="social-icon youtube" target="_blank" rel="noopener noreferrer" aria-label="ইউটিউব"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://x.com" class="social-icon twitter" target="_blank" rel="noopener noreferrer" aria-label="এক্স"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+        <div class="icon-btn d-flex justify-content-center align-items-center mega-toggle" data-bs-toggle="modal" data-bs-target="#megaModal" role="button" aria-label="সব বিভাগ">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="icon-btn d-flex justify-content-center align-items-center search-btn">
+          <a href="/search/" aria-label="খুঁজুন"><i class="fa-solid fa-magnifying-glass"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="megaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="container">
+            <div class="row d-flex justify-content-between align-items-center">
+              <div class="col-10">
+                <div class="barnd-logo-modal">
+                  <Logo size="sm" />
+                </div>
+              </div>
+              <div class="col-2 text-end">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="বন্ধ"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="mega-card">
+                  <div class="mega-menu-nav">
+                    <ul class="d-flex gap-4 flex-wrap">
+                      {nav.map((n) => (
+                        <li class="nav-item">
+                          <a class={`nav-link ${isActive(n.href) ? 'active' : ''}`} href={n.href}>{n.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>
-  const nav = document.getElementById('mnav');
-  const toggle = () => {
-    if (!nav) return;
-    nav.style.display = nav.style.display === 'none' || !nav.style.display ? 'flex' : 'none';
+  // theme
+  const root = document.documentElement;
+  const saved = localStorage.getItem('gz-theme');
+  if (saved) root.setAttribute('data-bs-theme', saved);
+  const syncIcons = () => {
+    const dark = root.getAttribute('data-bs-theme') === 'dark';
+    document.querySelectorAll('.theme-toggle-btn i').forEach((i) => {
+      i.classList.remove(dark ? 'fa-moon' : 'fa-sun');
+      i.classList.add(dark ? 'fa-sun' : 'fa-moon');
+    });
   };
-  document.getElementById('mnav-btn')?.addEventListener('click', toggle);
-  document.getElementById('mnav-btn-m')?.addEventListener('click', toggle);
+  syncIcons();
+  document.querySelectorAll('.theme-toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const dark = root.getAttribute('data-bs-theme') === 'dark';
+      const next = dark ? 'light' : 'dark';
+      root.setAttribute('data-bs-theme', next);
+      localStorage.setItem('gz-theme', next);
+      syncIcons();
+    });
+  });
 </script>

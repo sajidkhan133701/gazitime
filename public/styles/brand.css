@@ -1,0 +1,116 @@
+/* ==========================================================================
+   Gazitime brand — logo styles preserved from the original site
+   Do not restyle: the wordmark, colours and tagline are the client's brand.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/Kalpurush.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/Playfair-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --brand: #c4161c;
+  --red: #dc3545;
+}
+
+.logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo:hover {
+  color: inherit;
+}
+
+.logo__word {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #111;
+  line-height: 1;
+}
+
+.logo__word-a {
+  color: #111;
+}
+
+.logo__word-b {
+  color: var(--brand);
+}
+
+.logo__rule {
+  display: block;
+  background: var(--red);
+}
+
+.logo__tag {
+  font-family: 'Kalpurush', Arial, sans-serif;
+  text-transform: uppercase;
+  color: #8d8d8d;
+  white-space: nowrap;
+}
+
+.logo--lg .logo__word {
+  font-size: 54px;
+}
+
+.logo--lg .logo__rule {
+  display: none;
+}
+
+.logo--lg .logo__tag {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  margin-top: 7px;
+}
+
+.logo--sm .logo__rule {
+  display: none;
+}
+
+.logo--sm .logo__word {
+  font-size: 23px;
+}
+
+.logo--sm .logo__rule {
+  width: 30px;
+  height: 2px;
+  margin: 5px 0 4px;
+}
+
+.logo--sm .logo__tag {
+  font-size: 7.5px;
+  letter-spacing: 0.2em;
+}
+
+/* Keep the brand legible on dark theme without changing its form */
+[data-bs-theme='dark'] .logo__word-a {
+  color: #fff;
+}
+
+@media (max-width: 1199.98px) {
+  .logo--lg .logo__word {
+    font-size: 46px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .logo--lg .logo__word {
+    font-size: 34px;
+  }
+}

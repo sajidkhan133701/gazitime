@@ -4,36 +4,72 @@ import categories from '../data/categories.json';
 import Logo from './Logo.astro';
 ---
 
-<footer class="footer">
+<footer>
   <div class="container">
-    <div>
-      <Logo size="sm" />
-      <p style="margin:10px 0 0;font-size:14.5px;color:#444">{site.footerNote}</p>
-      <p style="margin:8px 0 0">
-        <a href={`mailto:${site.email}`} style="display:inline">{site.email}</a>
-      </p>
-    </div>
+    <div class="row">
+      <div class="footer-logo-icon justify-content-between align-items-center">
+        <div class="row w-100 align-items-center">
+          <div class="col-lg-6 col-md-6 col-sm-4 col-12">
+            <Logo size="sm" />
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-12">
+            <div class="d-flex items-center justify-content-lg-end">
+              <ul class="footer-extra-links list-unstyled d-flex mb-0" style="border-right:0">
+                <li><a href="/archive/">ই-পেপার</a></li>
+                <li class="ms-3"><a href="/about/">আমাদের সম্পর্কে</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2 col-12">
+            <div class="footer-socail-icon d-flex justify-content-between">
+              <a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="ইউটিউব"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="টিকটক"><i class="fa-brands fa-tiktok"></i></a>
+              <a href="https://x.com" target="_blank" rel="noopener" aria-label="এক্স"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <h3>সেকশন</h3>
-      {categories.slice(0, 5).map((c) => <a href={`/category/${c.slug}/`}>{c.name}</a>)}
-    </div>
+      <div class="col-12 mt-lg-4 mt-2 pb-lg-5 pb-md-3 pb-2 editor-main">
+        <div class="row">
+          <div class="col-lg-5 col-md-6 col-12 ps-lg-0 ps-md-0 ps-2">
+            <div class="editor-link">
+              <ul class="list-unstyled mb-0">
+                <li>সম্পাদক: গজিটাইম সম্পাদনা পর্ষদ</li>
+                <li>প্রকাশক: গজিটাইম</li>
+                <li>প্রকাশনা: গজিটাইম ডিজিটাল মিডিয়া</li>
+                <li>অনলাইন সংস্করণ: গজিটাইম</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-6 col-12 ps-md-0 mt-md-4 mt-lg-0 mt-3">
+            <div class="footer-rapport">
+              <p class="mb-1">যোগাযোগ:</p>
+              <p class="mb-1">ঢাকা, বাংলাদেশ</p>
+              <p class="mb-1">ইমেইল: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+              <p class="mb-1">বিজ্ঞাপন ও সার্কুলেশন: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <h3>আরও</h3>
-      {categories.slice(5, 10).map((c) => <a href={`/category/${c.slug}/`}>{c.name}</a>)}
-    </div>
-
-    <div>
-      <h3>সংবাদমাধ্যম</h3>
-      <a href="/about/">আমাদের সম্পর্কে</a>
-      <a href="/contact/">যোগাযোগ</a>
-      <a href="/search/">খবর খুঁজুন</a>
-    </div>
-
-    <div class="bottom">
-      <span>{site.copyright}</span>
-      <span>গোপনীয়তা নীতি · ব্যবহারের শর্তাবলী · বিজ্ঞাপন</span>
+      <div class="col-12">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <div class="copyright-text">{site.copyright}</div>
+          </div>
+          <div class="col-md-8">
+            <ul class="horizontal-list list-unstyled d-flex flex-wrap justify-content-md-end mb-0">
+              <li class="me-3"><a href="/archive/">আর্কাইভ</a></li>
+              <li class="me-3"><a href="/about/">ব্যবহারের শর্তাবলী</a></li>
+              <li class="me-3"><a href="/about/">গোপনীয়তা নীতি</a></li>
+              <li class="me-3"><a href="/about/">আমাদের সম্পর্কে</a></li>
+              <li class="me-3"><a href="/contact/">যোগাযোগ</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </footer>
