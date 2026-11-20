@@ -3,6 +3,19 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import site from '../data/site.json';
 import categories from '../data/categories.json';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+
+/* cache-busting: Cloudflare caches /styles/*.css for 4h, so the URL must change when the file does */
+const assetVer = (f: string) => {
+  try {
+    return crypto.createHash('md5').update(fs.readFileSync(f)).digest('hex').slice(0, 10);
+  } catch {
+    return '1';
+  }
+};
+const cssV = assetVer('public/styles/site.css');
+const brandV = assetVer('public/styles/brand.css');
 
 const {
   title,
@@ -149,8 +162,8 @@ const breadcrumbLd = {
     <link rel="dns-prefetch" href="https://cdn.jugantor.com" />
 
     <link rel="stylesheet" href="/vendor/css/nd.css" />
-    <link rel="stylesheet" href="/styles/brand.css" />
-    <link rel="stylesheet" href="/styles/site.css" />
+    <link rel="stylesheet" href={`/styles/brand.css?v=${brandV}`} />
+    <link rel="stylesheet" href={`/styles/site.css?v=${cssV}`} />
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={site.name} />
