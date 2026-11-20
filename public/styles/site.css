@@ -1115,3 +1115,13 @@ html, body { overflow-x: clip; }
 
 /* images keep their own colour */
 [data-bs-theme="dark"] img { opacity: .96; }
+
+
+/* visible breadcrumb (mirrors the BreadcrumbList schema) */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: #868e96; margin-bottom: 10px; }
+.crumbs a { color: #495057; }
+.crumbs a:hover { color: var(--secondary-color); }
+.crumbs__here { color: #868e96; max-width: 60ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-bs-theme="dark"] .crumbs a { color: #a7b0ba; }
+[data-bs-theme="dark"] .crumbs__here { color: #7d8791; }
+@media (max-width: 575.98px) { .crumbs__here { max-width: 22ch; } }

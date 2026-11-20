@@ -31,6 +31,14 @@ const tags = post.data.tags ?? [];
     <div class="container">
       <div class="row gx-5">
         <div class="col-lg-8">
+<nav class="crumbs" aria-label="ব্রেডক্রাম্ব">
+            <a href="/">হোম</a>
+            <span aria-hidden="true">›</span>
+            <a href={`/category/${post.data.category}/`}>{catName(post.data.category)}</a>
+            <span aria-hidden="true">›</span>
+            <span class="crumbs__here">{post.data.title}</span>
+          </nav>
+
           <a class="article-eyebrow" href={`/category/${post.data.category}/`}>
             {catName(post.data.category)}
           </a>

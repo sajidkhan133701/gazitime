@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import { allPosts, href, img, catOf } from '../lib/feed';
+import { bnDate, catName } from '../lib/utils';
+
+const all = await allPosts();
+
+const groups: { label: string; items: typeof all }[] = [];
+for (const p of all) {
+  const label = bnDate(p.data.date);
+  const g = groups.find((x) => x.label === label);
+  if (g) g.items.push(p);
+  else groups.push({ label, items: [p] });
+}
+---
+
+<Base
+  title="আজকের পত্রিকা"
+  seoTitle="আজকের পত্রিকা — গাজীপুরের দিনের সব খবর | গাজী টাইম"
+  description="গাজীপুরের আজকের সব খবর এক পাতায় — তারিখ অনুযায়ী সাজানো, সর্বশেষ সংবাদ সবার উপরে।"
+>
+  <section class="listing-wrap">
+    <div class="container">
+      <div class="listing-head">
+        <h1>আজকের পত্রিকা</h1>
+        <p class="listing-sub">দিন অনুযায়ী সাজানো — প্রতিদিনের সব খবর এক জায়গায়</p>
+      </div>
+
+      {groups.slice(0, 14).map((g) => (
+        <div class="latest-group">
+          <div class="latest-day">{g.label}</div>
+          {g.items.slice(0, 12).map((p: any) => (
+            <article class="listing-row">
+              <div class="row g-3 align-items-start">
+                <div class="col-lg-9 col-8">
+                  <div class="listing-meta">
+                    <a class="listing-cat" href={`/category/${catOf(p)}/`}>{catName(catOf(p))}</a>
+                  </div>
+                  <h3><a href={href(p)}>{p.data.title}</a></h3>
+                </div>
+                <div class="col-lg-3 col-4">
+                  <a href={href(p)}><img src={img(p)} alt={p.data.title} width="220" height="132" loading="lazy" /></a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
