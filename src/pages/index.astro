@@ -395,7 +395,7 @@ const featureCols = [
               <div class="news-card">
                 <div class="row">
                   <div class="col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4></div>
-                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a></div>
+                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="120" height="80" /></a></div>
                 </div>
               </div>
             ))}
@@ -440,7 +440,7 @@ const featureCols = [
                 <div class="news-card">
                   <div class="row">
                     <div class="col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4></div>
-                    <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="200" height="130" /></a></div>
+                    <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="200" height="130" /></a></div>
                   </div>
                 </div>
               ))}
@@ -450,7 +450,7 @@ const featureCols = [
                 <div class="news-card">
                   <div class="row">
                     <div class="col-lg-8 col-md-7 col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4><small class="text-muted">{bnDate(p.data.date)}</small></div>
-                    <div class="col-lg-4 col-md-5 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="200" height="130" /></a></div>
+                    <div class="col-lg-4 col-md-5 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="200" height="130" /></a></div>
                   </div>
                 </div>
               ))}
@@ -646,7 +646,7 @@ const featureCols = [
                   <h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4>
                 </div>
                 <div class="col-lg-5 col-md-3 col-4">
-                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a>
+                  <a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="120" height="80" /></a>
                 </div>
               </div>
             </article>
@@ -679,7 +679,7 @@ const featureCols = [
                 <div class="news-card">
                   <div class="row">
                     <div class="col-lg-8 col-8"><h4 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h4><small class="text-muted">{bnDate(p.data.date)}</small></div>
-                    <div class="col-lg-4 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="150" height="110" /></a></div>
+                    <div class="col-lg-4 col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="150" height="110" /></a></div>
                   </div>
                 </div>
               ))}
@@ -692,7 +692,7 @@ const featureCols = [
             {byCat('opinion').slice(0, 3).map((p) => (
               <div class="news-card">
                 <div class="row align-items-center">
-                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="90" /></a></div>
+                  <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="120" height="90" /></a></div>
                   <div class="col-8"><h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4></div>
                 </div>
               </div>
@@ -743,7 +743,7 @@ const featureCols = [
             <div class="news-card">
               <div class="row">
                 <div class="col-8"><h4 style="font-size:15px;font-weight:600;line-height:1.5"><a href={href(p)}>{p.data.title}</a></h4></div>
-                <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt="" width="120" height="80" /></a></div>
+                <div class="col-4"><a href={href(p)}><img class="img-fluid" src={img(p)} alt={p.data.title} width="120" height="80" /></a></div>
               </div>
             </div>
           ))}

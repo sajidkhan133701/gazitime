@@ -45,7 +45,7 @@ const index = posts.map((p) => ({
 
     const item = (p) =>
       '<article><a href="/news/' + p.id + '/">' +
-      (p.img ? '<img src="' + p.img + '" alt="" width="400" height="300" loading="lazy">' : '') +
+      (p.img ? '<img src="' + p.img + '" alt={p.data.title} width="400" height="300" loading="lazy">' : '') +
       '<h4>' + p.title + '</h4></a>' +
       (p.dek ? '<p style="font-size:14.5px;color:#555;margin:4px 0 0">' + p.dek + '</p>' : '') +
       '<div class="meta-row">' + p.cat + ' · ' + p.date + '</div></article>';
