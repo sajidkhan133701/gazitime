@@ -26,7 +26,7 @@ const shareUrl = `https://gazitime.online/news/${post.id}/`;
 const tags = post.data.tags ?? [];
 ---
 
-<Base slug={post.id} cat={post.data.category} title={post.data.title} description={post.data.dek} image={img(post)} type="article">
+<Base slug={post.id} cat={post.data.category} title={post.data.title} description={post.data.dek} image={img(post)} imageAlt={post.data.title} type="article" published={post.data.date} modified={post.data.updatedAt} author={post.data.author ?? 'গাজী টাইম ডেস্ক'}>
   <section class="article-wrap">
     <div class="container">
       <div class="row gx-5">

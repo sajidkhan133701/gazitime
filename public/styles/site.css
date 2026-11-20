@@ -797,3 +797,18 @@ button:focus-visible,
   background-color: #dee2e6 !important;
   border-color: #ced4da !important;
 }
+
+
+/* SEO: visually hidden page H1 (kept for crawlers + screen readers) */
+.sr-only-home-h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.news-source { font-size: 13px; color: #868e96; margin-top: 18px; padding-top: 10px; border-top: 1px solid #eee; }

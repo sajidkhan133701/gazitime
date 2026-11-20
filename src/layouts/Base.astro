@@ -2,31 +2,151 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import site from '../data/site.json';
+import categories from '../data/categories.json';
 
 const {
   title,
   description = site.description,
   image = '/images/metro.jpg',
+  imageAlt = '',
   type = 'website',
   bodyClass = '',
   slug = '',
   cat = '',
+  published,
+  modified,
+  author = 'গাজী টাইম ডেস্ক',
+  seoTitle,
+  keywords,
+  noindex = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+const SITE = 'https://gazitime.online';
+const ORIGIN = Astro.site ? Astro.site.origin : SITE;
+
+/* ---- titles: brand last, keyword first ---- */
+const pageTitle = seoTitle
+  ? seoTitle
+  : title
+    ? `${title} | ${site.name}`
+    : 'গাজীপুরের খবর ও সর্বশেষ সংবাদ | গাজী টাইম';
+
+/* ---- meta description kept inside Google's 160-char window ---- */
+const desc = (description || site.description).replace(/\s+/g, ' ').trim();
+const metaDesc = desc.length > 158 ? desc.slice(0, 155).replace(/[,।\s]+\S*$/, '') + '…' : desc;
+
+/* ---- canonical strips pagination + query noise ---- */
+const path = Astro.url.pathname.replace(/\/page\/\d+\/?$/, '/');
+const canonical = new URL(path, ORIGIN).href;
+
+const absImage = /^https?:\/\//.test(image) ? image : new URL(image, ORIGIN).href;
+
+const catSlug = cat || '';
+const catLabel = categories.find((c) => c.slug === catSlug)?.name ?? '';
+
+/* ---- keyword set: Bengali + transliterated + English ---- */
+const baseKeywords = [
+  'গাজীপুর', 'গাজীপুরের খবর', 'গাজীপুর সংবাদ', 'গাজীপুর নিউজ', 'আজকের গাজীপুর',
+  'গাজীপুর সদর', 'টঙ্গী', 'কালিয়াকৈর', 'শ্রীপুর', 'কাপাসিয়া', 'কালীগঞ্জ',
+  'গাজীপুর জেলা', 'গাজীপুর সিটি', 'গাজী টাইম', 'Gazipur', 'Gazipur news',
+  'Gazipur district news', 'Gazitime', 'গাজীপুরের সর্বশেষ সংবাদ',
+];
+const metaKeywords = (keywords ? [...keywords, ...baseKeywords] : baseKeywords).join(', ');
+
+/* ---- structured data ---- */
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsMediaOrganization',
+  name: site.name,
+  alternateName: 'Gazitime',
+  url: ORIGIN,
+  logo: { '@type': 'ImageObject', url: `${ORIGIN}/favicon.svg`, width: 512, height: 512 },
+  description: site.description,
+  areaServed: { '@type': 'AdministrativeArea', name: 'গাজীপুর, বাংলাদেশ' },
+  knowsLanguage: ['bn-BD'],
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  alternateName: 'Gazitime — Gazipur News',
+  url: ORIGIN,
+  inLanguage: 'bn-BD',
+  publisher: { '@type': 'Organization', name: site.name },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${ORIGIN}/search/?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const articleLd =
+  type === 'article' && slug
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        headline: title,
+        description: metaDesc,
+        image: [absImage],
+        datePublished: published ? new Date(published).toISOString() : undefined,
+        dateModified: modified
+          ? new Date(modified).toISOString()
+          : published
+            ? new Date(published).toISOString()
+            : undefined,
+        author: { '@type': 'Person', name: author },
+        publisher: {
+          '@type': 'Organization',
+          name: site.name,
+          logo: { '@type': 'ImageObject', url: `${ORIGIN}/favicon.svg` },
+        },
+        articleSection: catLabel || 'সংবাদ',
+        inLanguage: 'bn-BD',
+        isAccessibleForFree: true,
+      }
+    : null;
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'হোম', item: `${ORIGIN}/` },
+    ...(catLabel
+      ? [{ '@type': 'ListItem', position: 2, name: catLabel, item: `${ORIGIN}/category/${catSlug}/` }]
+      : []),
+    ...(type === 'article' && title
+      ? [{ '@type': 'ListItem', position: catLabel ? 3 : 2, name: title }]
+      : []),
+  ],
+};
 ---
 
 <!doctype html>
-<html lang="bn" data-bs-theme="light">
+<html lang="bn-BD" data-bs-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDesc} />
+    <meta name="keywords" content={metaKeywords} />
+    <meta name="author" content={site.name} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+    <meta name="googlebot" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="bn-BD" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="গাজী টাইম আরএসএস" href={`${ORIGIN}/rss.xml`} />
     <link rel="preload" href="/vendor/media/Kalpurush.7af566a6.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://cdn.jagonews24.com" crossorigin />
+    <link rel="preconnect" href="https://media.prothomalo.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jugantor.com" />
 
     <link rel="stylesheet" href="/vendor/css/nd.css" />
     <link rel="stylesheet" href="/styles/brand.css" />
@@ -34,10 +154,33 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="bn_BD" />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.site ?? Astro.url).href} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absImage} />
+    <meta property="og:image:alt" content={imageAlt || title || site.name} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {published && <meta property="article:published_time" content={new Date(published).toISOString()} />}
+    {modified && <meta property="article:modified_time" content={new Date(modified).toISOString()} />}
+    {catLabel && <meta property="article:section" content={catLabel} />}
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={metaDesc} />
+    <meta name="twitter:image" content={absImage} />
+
+    <meta name="theme-color" content="#f68d23" />
+    <meta name="geo.region" content="BD-13" />
+    <meta name="geo.placename" content="Gazipur" />
+    <meta name="geo.position" content="23.9999;90.4203" />
+    <meta name="ICBM" content="23.9999, 90.4203" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(org)} />
+    <script type="application/ld+json" set:html={JSON.stringify(website)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    {articleLd && <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />}
   </head>
   <body class={bodyClass} data-slug={slug} data-title={title} data-cat={cat}>
     <Header />

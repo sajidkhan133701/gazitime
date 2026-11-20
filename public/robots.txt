@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gazitime.online/sitemap-index.xml
+Sitemap: https://gazitime.online/sitemap-index.xml\n\nSitemap: https://gazitime.online/sitemap-index.xml\nSitemap: https://gazitime.online/news-sitemap.xml\nSitemap: https://gazitime.online/rss.xml\n
