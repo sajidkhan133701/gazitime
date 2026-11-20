@@ -284,40 +284,43 @@ const featureCols = [
           </div>
 
           <div class="tranding-news mt-3">
-            <ul class="nav nav-pills mb-2" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabLatest" type="button">সর্বশেষ</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabPopular" type="button">জনপ্রিয়</button>
-              </li>
-            </ul>
-            <div class="tab-content border p-2">
-              <div class="tab-pane fade show active" id="tabLatest">
-                <ul class="list-unstyled mb-0">
-                  {latest(all, 5).map((p) => (
-                    <li class="d-flex gap-2 py-2 border-bottom">
-                      <span class="text-muted" style="font-size:13px">{timeBn(p.data.date)}</span>
-                      <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
-                    </li>
-                  ))}
-                </ul>
-                <div class="text-center mt-2">
-                  <a class="btn btn-sm btn-outline-secondary rounded-pill px-3" href="/latest/">আরো <i class="fa-solid fa-angle-right"></i></a>
+            <div class="tab-card">
+              <ul class="nav tab-card__nav" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabLatest" type="button">সর্বশেষ</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabPopular" type="button">জনপ্রিয়</button>
+                </li>
+              </ul>
+              <div class="tab-content tab-card__body">
+                <div class="tab-pane fade show active" id="tabLatest">
+                  <ol class="tab-list">
+                    {latest(all, 5).map((p) => (
+                      <li class="tab-row">
+                        <span class="tab-time">{timeBn(p.data.date)}</span>
+                        <a class="tab-title" href={href(p)}>{p.data.title}</a>
+                      </li>
+                    ))}
+                  </ol>
+                  <div class="tab-more">
+                    <a href="/latest/">সব সর্বশেষ <i class="fa-solid fa-angle-right"></i></a>
+                  </div>
                 </div>
-              </div>
-              <div class="tab-pane fade" id="tabPopular">
-                <ul class="list-unstyled mb-0" id="popular-list">
-                  {popular(all, 5).map((p) => (
-                    <li class="d-flex gap-2 py-2 border-bottom">
-                      <span class="text-muted" style="font-size:13px">{timeBn(p.data.date)}</span>
-                      <a href={href(p)} style="font-size:14px;line-height:1.5">{p.data.title}</a>
-                    </li>
-                  ))}
-                </ul>
+                <div class="tab-pane fade" id="tabPopular">
+                  <ol class="tab-list" id="popular-list">
+                    {popular(all, 5).map((p, i) => (
+                      <li class="tab-row">
+                        <span class="tab-rank">{(i + 1).toString()}</span>
+                        <a class="tab-title" href={href(p)}>{p.data.title}</a>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               </div>
             </div>
           </div>
+
         </aside>
       </div>
     </div>
@@ -478,7 +481,7 @@ const featureCols = [
             <a class="carousel-cell nav-link fs-6 active" href="/category/entertainment/">সাক্ষাৎকার</a>
             <a class="carousel-cell nav-link fs-6" href="/category/sports/">প্রাইম টাইম</a>
             <a class="carousel-cell nav-link fs-6" href="/category/tech/">গ্লোবাল ভিউজ</a>
-            <a class="carousel-cell nav-link fs-6" href="/category/special/">দিগন্ত বিশ্লেষণ</a>
+            <a class="carousel-cell nav-link fs-6" href="/category/special/">গাজী বিশ্লেষণ</a>
             <a class="carousel-cell nav-link fs-6" href="/category/economy/">স্পেশাল টক</a>
             <a class="carousel-cell nav-link fs-6" href="/category/national/">টপ নিউজ</a>
           </div>
@@ -560,9 +563,9 @@ const featureCols = [
       </div>
 
       <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-md-2 mt-2 d-flex">
-        <div class="w-100 bg-white border d-flex flex-column">
+        <div class="w-100 bg-white border d-flex flex-column explainer-card">
           <div class="bg-explainer text-white text-center py-3 fw-bold fs-5">
-            <i class="bi bi-lightbulb me-2"></i>দিগন্ত এক্সপ্লেইনার
+            <i class="bi bi-lightbulb me-2"></i>গাজী এক্সপ্লেইনার
           </div>
           <div class="p-3 d-flex flex-column flex-grow-1">
             {all.slice(10, 11).map((p) => (
@@ -570,7 +573,7 @@ const featureCols = [
                 <p class="fs-5 mb-1" style="font-size:18px;font-weight:600"><a href={href(p)}>{p.data.title}</a></p>
                 <p class="mb-2" style="font-size:14px;color:#666">{p.data.dek}</p>
                 <div class="mt-auto">
-                  <a class="fw-bold" href={href(p)} style="color:#f68d23">বিস্তারিত</a>
+                  <a class="explainer-more" href={href(p)}>বিস্তারিত <i class="fa-solid fa-arrow-right"></i></a>
                   <img class="img-fluid mt-2" src={img(p)} alt={p.data.title} width="300" height="170" />
                 </div>
               </>

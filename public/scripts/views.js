@@ -30,8 +30,8 @@
       for (var i = 0; i < items.length; i++) {
         var it = items[i];
         if (!it.title) continue;
-        html += '<li class="pop-item"><span class="pop-count">' + dg(it.count) + '</span>' +
-                '<a href="/news/' + it.slug + '/">' + it.title + '</a></li>';
+        html += '<li class="tab-row"><span class="tab-rank">' + dg(i + 1) + '</span>' +
+                '<a class="tab-title" href="/news/' + it.slug + '/">' + it.title + '</a></li>';
       }
       if (html) box.innerHTML = html;
     })
