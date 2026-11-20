@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import categories from '../../../data/categories.json';
+import areas from '../../../data/areas.json';
 import { bnDate, catName } from '../../../lib/utils';
 import { allPosts, href, img } from '../../../lib/feed';
 
@@ -41,6 +42,14 @@ const bn = (n: number) => String(n).replace(/\d/g, (x) => '০১২৩৪৫৬
           ))}
         </div>
       </div>
+
+      {isFirst && category.slug === 'gazipur' && (
+        <div class="area-chips">
+          {areas.map((a) => (
+            <a class="btn-tag" href={`/gazipur/${a.slug}/`}>{a.name}</a>
+          ))}
+        </div>
+      )}
 
       {isFirst && category.slug === 'gazipur' && (
         <p class="listing-sub mb-3">

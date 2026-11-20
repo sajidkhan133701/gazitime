@@ -17,6 +17,7 @@ const blog = defineCollection({
     views: z.number().default(0),
     breaking: z.boolean().default(false),
     updatedAt: z.coerce.date().optional(),
+    upazila: z.string().optional(),
   }),
 });
 

@@ -1125,3 +1125,11 @@ html, body { overflow-x: clip; }
 [data-bs-theme="dark"] .crumbs a { color: #a7b0ba; }
 [data-bs-theme="dark"] .crumbs__here { color: #7d8791; }
 @media (max-width: 575.98px) { .crumbs__here { max-width: 22ch; } }
+
+/* ---------- upazila landing pages ---------- */
+.area-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+.area-lead img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+.area-lead h2 { font-size: 26px; line-height: 1.45; font-weight: 700; margin: 0 0 8px; }
+.area-lead h2 a { color: inherit; }
+.area-lead h2 a:hover { color: var(--secondary-color); }
+@media (max-width: 767.98px) { .area-lead h2 { font-size: 20px; } }

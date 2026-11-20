@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import areas from '../../data/areas.json';
+import { allPosts, href, img } from '../../lib/feed';
+import { bnDate } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = await allPosts();
+  // only build a page where real reporting exists — no thin/doorway pages
+  return areas
+    .map((a) => ({
+      params: { area: a.slug },
+      props: { area: a, posts: all.filter((p) => p.data.upazila === a.slug) },
+    }))
+    .filter((x) => x.props.posts.length > 0);
+}
+
+const { area, posts } = Astro.props as any;
+const [lead, ...rest] = posts;
+const others = areas.filter((a) => a.slug !== area.slug);
+const bn = (n: number) => String(n).replace(/\d/g, (x) => '০১২৩৪৫৬৭৮৯'[+x]);
+
+const placeLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AdministrativeArea',
+  name: area.name,
+  containedInPlace: { '@type': 'AdministrativeArea', name: 'গাজীপুর জেলা' },
+  geo: { '@type': 'GeoCoordinates', latitude: area.lat, longitude: area.lng },
+  url: `https://gazitime.online/gazipur/${area.slug}/`,
+};
+---
+
+<Base
+  title={`${area.possessive} খবর`}
+  seoTitle={`${area.possessive} খবর — আজকের সর্বশেষ সংবাদ | গাজী টাইম`}
+  description={`${area.possessive} সর্বশেষ খবর ও সংবাদ — ${area.name} উপজেলার স্থানীয় ঘটনা, রাজনীতি, শিক্ষা, অপরাধ ও উন্নয়নের আপডেট সবচেয়ে আগে গাজী টাইমে।`}
+  keywords={[`${area.possessive} খবর`, `${area.name} সংবাদ`, `${area.name} উপজেলা`]}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(placeLd)} />
+
+  <section class="listing-wrap">
+    <div class="container">
+      <nav class="crumbs" aria-label="ব্রেডক্রাম্ব">
+        <a href="/">হোম</a>
+        <span aria-hidden="true">›</span>
+        <a href="/category/gazipur/">গাজীপুর</a>
+        <span aria-hidden="true">›</span>
+        <span class="crumbs__here">{area.name}</span>
+      </nav>
+
+      <div class="listing-head">
+        <h1>{area.possessive} খবর</h1>
+        <p class="listing-sub">{area.intro}</p>
+        <p class="listing-sub" style="margin-top:6px;font-size:13px">
+          এই এলাকার মোট <strong>{bn(posts.length)}</strong>টি প্রতিবেদন প্রকাশিত হয়েছে।
+        </p>
+      </div>
+
+      <div class="area-chips">
+        {others.map((a) => (
+          <a class="btn-tag" href={`/gazipur/${a.slug}/`}>{a.name}</a>
+        ))}
+        <a class="btn-tag" href="/category/gazipur/">সব গাজীপুর</a>
+      </div>
+
+      {lead && (
+        <article class="area-lead mb-4">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <a href={href(lead)}><img src={img(lead)} alt={lead.data.title} width="760" height="430" /></a>
+            </div>
+            <div class="col-lg-5">
+              <h2><a href={href(lead)}>{lead.data.title}</a></h2>
+              {lead.data.dek && <p class="listing-dek">{lead.data.dek}</p>}
+              <div class="listing-meta"><span class="listing-cat">{bnDate(lead.data.date)}</span></div>
+            </div>
+          </div>
+        </article>
+      )}
+
+      {rest.map((p: any) => (
+        <article class="listing-row">
+          <div class="row g-3 align-items-start">
+            <div class="col-lg-9 col-8">
+              <h3><a href={href(p)}>{p.data.title}</a></h3>
+              {p.data.dek && <p class="listing-dek">{p.data.dek}</p>}
+              <div class="listing-meta"><span class="listing-cat">{bnDate(p.data.date)}</span></div>
+            </div>
+            <div class="col-lg-3 col-4">
+              <a href={href(p)}><img src={img(p)} alt={p.data.title} width="240" height="144" loading="lazy" /></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>
