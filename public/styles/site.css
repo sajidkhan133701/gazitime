@@ -625,3 +625,19 @@ a {
 .listing-head h1 { font-size: 30px; font-weight: 700; margin: 0 0 4px; }
 .listing-sub { font-size: 15px; color: #6c757d; margin: 0; }
 @media (max-width: 767.98px) { .listing-row h3 { font-size: 17px; } }
+
+
+/* ---------- pagination + category hero ---------- */
+.pagination-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 26px 0 34px; }
+.page-btn { display: inline-block; min-width: 74px; text-align: center; padding: 8px 14px; border: 1px solid #dee2e6; border-radius: 2px; font-size: 14px; color: #1c1b1b; }
+.page-btn:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
+.page-btn.is-off { opacity: .35; pointer-events: none; }
+.page-count { font-size: 14px; color: #6c757d; }
+.cat-strip { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; padding: 8px 0 10px; border-bottom: 2px solid var(--secondary-color); margin-bottom: 18px; }
+.cat-strip a { color: #495057; }
+.cat-strip a:hover { color: var(--secondary-color); }
+.lead-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+.lead-card h2 { font-size: 26px; line-height: 1.45; font-weight: 700; margin: 10px 0 6px; }
+.mini-card img { width: 100%; aspect-ratio: 5 / 3; object-fit: cover; display: block; }
+.mini-card h3 { font-size: 16px; line-height: 1.45; font-weight: 600; margin: 7px 0 0; }
+@media (max-width: 767.98px) { .lead-card h2 { font-size: 21px; } }

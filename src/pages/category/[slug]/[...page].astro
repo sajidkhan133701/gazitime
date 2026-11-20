@@ -1,0 +1,83 @@
+---
+import Base from '../../../layouts/Base.astro';
+import categories from '../../../data/categories.json';
+import { bnDate, catName } from '../../../lib/utils';
+import { allPosts, href, img } from '../../../lib/feed';
+
+export async function getStaticPaths({ paginate }: any) {
+  const all = await allPosts();
+  return categories.flatMap((c) => {
+    const posts = all.filter((p: any) => p.data.category === c.slug);
+    return paginate(posts, { params: { slug: c.slug }, pageSize: 12, props: { category: c } });
+  });
+}
+
+const { category, page } = Astro.props as any;
+const posts = page.data as any[];
+const isFirst = page.currentPage === 1;
+const lead = posts[0];
+const grid = posts.slice(1, 5);
+const rest = isFirst ? posts.slice(5) : posts;
+const bn = (n: number) => String(n).replace(/\d/g, (x) => '০১২৩৪৫৬৭৮৯'[+x]);
+---
+
+<Base title={catName(category.slug)} description={category.description}>
+  <section class="listing-wrap">
+    <div class="container">
+      <div class="listing-head">
+        <h1>{catName(category.slug)}</h1>
+        <div class="cat-strip">
+          {categories.filter((c) => c.slug !== category.slug).map((c) => (
+            <a href={`/category/${c.slug}/`}>{catName(c.slug)}</a>
+          ))}
+        </div>
+      </div>
+
+      {lead && isFirst && (
+        <div class="row g-4 mb-4">
+          <div class="col-lg-7">
+            <article class="lead-card">
+              <a href={href(lead)}><img src={img(lead)} alt={lead.data.title} width="760" height="430" /></a>
+              <h2><a href={href(lead)}>{lead.data.title}</a></h2>
+              {lead.data.dek && <p class="listing-dek">{lead.data.dek}</p>}
+              <div class="listing-meta"><span class="listing-cat">{bnDate(lead.data.date)}</span></div>
+            </article>
+          </div>
+          <div class="col-lg-5">
+            <div class="row g-3">
+              {grid.map((p) => (
+                <div class="col-6">
+                  <article class="mini-card">
+                    <a href={href(p)}><img src={img(p)} alt={p.data.title} width="360" height="216" loading="lazy" /></a>
+                    <h3><a href={href(p)}>{p.data.title}</a></h3>
+                  </article>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {rest.map((p) => (
+        <article class="listing-row">
+          <div class="row g-3 align-items-start">
+            <div class="col-lg-9 col-8">
+              <h3><a href={href(p)}>{p.data.title}</a></h3>
+              {p.data.dek && <p class="listing-dek">{p.data.dek}</p>}
+              <div class="listing-meta"><span class="listing-cat"><i class="fa-solid fa-clock"></i> {bnDate(p.data.date)}</span></div>
+            </div>
+            <div class="col-lg-3 col-4">
+              <a href={href(p)}><img src={img(p)} alt={p.data.title} width="240" height="144" loading="lazy" /></a>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <nav class="pagination-wrap" aria-label="পৃষ্ঠা">
+        {page.url.prev ? <a class="page-btn" href={page.url.prev}>আগের</a> : <span class="page-btn is-off">আগের</span>}
+        <span class="page-count">পৃষ্ঠা {bn(page.currentPage)} / {bn(page.lastPage)}</span>
+        {page.url.next ? <a class="page-btn" href={page.url.next}>পরের</a> : <span class="page-btn is-off">পরের</span>}
+      </nav>
+    </div>
+  </section>
+</Base>

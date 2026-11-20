@@ -1,20 +1,27 @@
 ---
-import Base from '../layouts/Base.astro';
-import { allPosts, href, img, catOf } from '../lib/feed';
-import { bnDate, catName } from '../lib/utils';
+import Base from '../../layouts/Base.astro';
+import { allPosts, href, img, catOf } from '../../lib/feed';
+import { bnDate, catName } from '../../lib/utils';
 
-const all = await allPosts();
+export async function getStaticPaths({ paginate }: any) {
+  const all = await allPosts();
+  return paginate(all, { pageSize: 20 });
+}
 
-const groups: { label: string; items: typeof all }[] = [];
-for (const p of all) {
+const { page } = Astro.props as any;
+const posts = page.data;
+const bn = (n: number) => String(n).replace(/\d/g, (x) => '০১২৩৪৫৬৭৮৯'[+x]);
+
+const timeBn = (d: Date) =>
+  new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka' }).format(d);
+
+const groups: { label: string; items: any[] }[] = [];
+for (const p of posts) {
   const label = bnDate(p.data.date);
   const g = groups.find((x) => x.label === label);
   if (g) g.items.push(p);
   else groups.push({ label, items: [p] });
 }
-
-const timeBn = (d: Date) =>
-  new Intl.DateTimeFormat('bn-BD', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dhaka' }).format(d);
 ---
 
 <Base title="সর্বশেষ" description="গজিটাইমের সর্বশেষ সংবাদ">
@@ -28,7 +35,7 @@ const timeBn = (d: Date) =>
       {groups.map((g) => (
         <div class="latest-group">
           <div class="latest-day">{g.label}</div>
-          {g.items.map((p) => (
+          {g.items.map((p: any) => (
             <article class="listing-row">
               <div class="row g-3 align-items-start">
                 <div class="col-lg-9 col-8">
@@ -47,6 +54,12 @@ const timeBn = (d: Date) =>
           ))}
         </div>
       ))}
+
+      <nav class="pagination-wrap" aria-label="পৃষ্ঠা">
+        {page.url.prev ? <a class="page-btn" href={page.url.prev}>আগের</a> : <span class="page-btn is-off">আগের</span>}
+        <span class="page-count">পৃষ্ঠা {bn(page.currentPage)} / {bn(page.lastPage)}</span>
+        {page.url.next ? <a class="page-btn" href={page.url.next}>পরের</a> : <span class="page-btn is-off">পরের</span>}
+      </nav>
     </div>
   </section>
 </Base>
