@@ -556,3 +556,17 @@ a {
 .hero-content h3 { font-size: 25px !important; line-height: 1.45 !important; font-weight: 600 !important; }
 .hero-content p { font-size: 16px !important; line-height: 1.55 !important; }
 .hero-content h2 { font-size: 19px !important; }
+
+/* ---------- mobile refinements ---------- */
+@media (max-width: 767.98px) {
+  .short-item { flex: 0 0 60%; }
+  .ad-box--300x250 { width: 300px; margin-left: auto; margin-right: auto; }
+  .article-head h1 { font-size: 27px; line-height: 1.45; }
+  .hero-content h3 { font-size: 21px !important; }
+  .listing-head h1 { font-size: 26px; }
+  .listing-row h3 { font-size: 18px; }
+  .article-side { position: static; }
+}
+
+.nav-pills .nav-link.active,
+.news-tab .nav-link.active { color: var(--secondary-color); background: transparent; }
