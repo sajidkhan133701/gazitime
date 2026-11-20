@@ -414,10 +414,10 @@ a {
   }
 }
 
-/* ---------- card typography matched to the reference ---------- */
+/* ---------- structure the theme expects ---------- */
 .law-news-container .news-item > a > img,
 .art-news-container .news-item > a > img {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   width: 100%;
   display: block;
@@ -427,102 +427,43 @@ a {
 .art-news-container .news-item h3,
 .special-item h3,
 .entertainment-left-card h3,
-.lifestyle h3 {
-  font-size: 19px;
-  line-height: 1.45;
+.lifestyle h3,
+.entertainment-card h3,
+.political-card-left .news-card h3,
+.hero-content-card .news-card h3,
+.nationwide-left-card .news-card h3,
+.election-card .news-card h3 {
+  font-size: 18px;
+  line-height: 1.5;
   font-weight: 600;
-  margin: 8px 0 6px;
 }
 
 .special-item p,
 .entertainment-left-card p,
 .lifestyle p {
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
-  color: #555;
+  color: #495057;
 }
 
-.political-card-left h3 {
-  font-size: 18px;
-}
+/* video band */
+.video .news-title-more h2,
+.video .news-title-more h2 a { color: #fff; }
+.video-content .video-item h4 a { color: #fff; font-size: 25px; font-weight: 600; }
+.video-right-card .news-card h4 a { color: #fff; font-size: 20px; }
+.video-card { border-bottom: 1px solid #3a3a3a; padding: 10px 0; }
+.video-tranding-news .tag-scroll { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.video-tranding-news .tag-scroll::-webkit-scrollbar { display: none; }
+.video-tranding-news .nav-link { color: #d9d9d9; font-size: 15px; padding: 6px 10px; white-space: nowrap; }
+.video-tranding-news .nav-link.active { background: #f28c28; color: #1c1b1b; border-radius: 2px; }
 
-.entertainment-card h3 {
-  font-size: 17px;
-  line-height: 1.45;
-}
-
-.sport-content .sport h3 {
-  font-size: 22px;
-  line-height: 1.4;
-  margin: 8px 0 6px;
-}
-
-.international-list-item h4 a,
-.international-grid-column h3 a,
-.bangladesh-media h3 a {
-  font-weight: 600;
-}
-
-/* ---------- video band ---------- */
-.video .news-title-more h2 a {
-  color: #fff;
-}
-
-.video-content .video-item h4 a {
-  color: #fff;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.video-right-card .video-card h4 a {
-  font-size: 17px;
-}
-
-.video-tranding-news .tag-scroll {
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.video-tranding-news .tag-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.video-tranding-news .nav-link {
-  white-space: nowrap;
-  flex: none;
-}
-
-.video-tranding-news .nav-link.active {
-  background: #f28c28;
-  color: #1c1b1b;
-  border-radius: 2px;
-}
-
-/* ---------- header opinion carousel ---------- */
-.right-slider .slider-image-text h3 {
-  font-size: 15px;
-  line-height: 1.4;
-  margin-right: 10px;
-  font-weight: 600;
-}
-
-.right-slider .slider-image-text img {
-  width: 130px;
-  height: 70px;
-  object-fit: cover;
-}
-
-/* ---------- footer bottom links ---------- */
-footer ul.horizontal-list {
-  gap: 16px;
-}
-
-footer ul.horizontal-list li a {
-  font-size: 14px;
-}
+/* read-more accordion, as on the reference */
+.read-more-block { background: #eef2fb; border: 1px solid #dde4f2; border-radius: 4px; margin: 18px 0; }
+.read-more-block .read-more-head { font-size: 17px; font-weight: 600; padding: 12px 16px; border-bottom: 1px solid #dde4f2; }
+.read-more-block a { display: flex; justify-content: space-between; align-items: center; background: #fff; font-size: 17px; color: #1c1b1b; padding: 14px 16px; border-bottom: 1px solid #e9ecef; }
+.read-more-block a:last-child { border-bottom: 0; }
+.read-more-block a:hover { color: var(--secondary-color); }
+.read-more-block i { color: #adb5bd; font-size: 13px; }
 
 /* ================= article ================= */
 .article-wrap { padding: 26px 0 10px; }
@@ -610,3 +551,8 @@ footer ul.horizontal-list li a {
 /* header opinion carousel — hard limits */
 .right-slider img { width: 130px !important; height: 70px !important; object-fit: cover !important; }
 .right-slider .slider-image-text h3 { max-width: 150px; font-size: 14.5px !important; line-height: 1.4 !important; }
+
+/* hero lead headline — reference scale */
+.hero-content h3 { font-size: 25px !important; line-height: 1.45 !important; font-weight: 600 !important; }
+.hero-content p { font-size: 16px !important; line-height: 1.55 !important; }
+.hero-content h2 { font-size: 19px !important; }
