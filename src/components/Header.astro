@@ -140,7 +140,9 @@ const isActive = (href: string) =>
     </div>
   </div>
 
-  <div class="modal fade" id="megaModal" tabindex="-1" aria-hidden="true">
+</section>
+
+<div class="modal fade" id="megaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
       <div class="modal-content">
         <div class="modal-header">
@@ -157,29 +159,39 @@ const isActive = (href: string) =>
             </div>
           </div>
         </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-12 col-md-12">
-                <div class="mega-card">
-                  <div class="mega-menu-nav">
-                    <ul class="d-flex gap-4 flex-wrap">
-                      {nav.map((n) => (
-                        <li class="nav-item">
-                          <a class={`nav-link ${isActive(n.href) ? 'active' : ''}`} href={n.href}>{n.name}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="mm-body">
+          <form class="mm-search" action="/search/" method="get">
+            <input type="search" name="q" placeholder="গাজীপুরের খবর খুঁজুন" aria-label="খুঁজুন" />
+            <button type="submit" aria-label="সার্চ"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+
+          <div class="mm-quick">
+            {nav.slice(0, 4).map((n) => (
+              <a class="mm-chip" href={n.href}>{n.name}</a>
+            ))}
+          </div>
+
+          <ul class="mm-list">
+            {nav.slice(4).map((n) => (
+              <li>
+                <a href={n.href}>
+                  {n.name}
+                  <i class="fa-solid fa-angle-right"></i>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div class="mm-foot">
+            <a href="/latest/">সর্বশেষ</a>
+            <a href="/gazipur/">এলাকা ভিত্তিক</a>
+            <a href="/about/">সম্পর্কে</a>
+            <a href="/contact/">যোগাযোগ</a>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
 <script>
   // theme
