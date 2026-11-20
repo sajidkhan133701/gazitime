@@ -1,35 +1,32 @@
-// Cloudflare Pages Function — most viewed stories
+// Cloudflare Pages Function — most viewed stories from the ranked index
 // KV binding required: VIEWS
+const INDEX_KEY = 'popular:index';
+
 export const onRequest = async (ctx: any) => {
   const url = new URL(ctx.request.url);
   const n = Math.min(parseInt(url.searchParams.get('n') || '5', 10) || 5, 20);
   const store = ctx.env.VIEWS;
 
-  if (!store) {
-    return new Response(JSON.stringify([]), {
-      headers: { 'content-type': 'application/json' },
-    });
+  let items: any[] = [];
+  if (store) {
+    try {
+      items = JSON.parse((await store.get(INDEX_KEY)) || '[]');
+      if (!Array.isArray(items)) items = [];
+    } catch (e) {
+      items = [];
+    }
   }
 
-  const list = await store.list({ prefix: 'views:', limit: 1000 });
-  const items = [];
+  const out = items
+    .filter((i) => i && i.slug && i.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, n)
+    .map((i) => ({ slug: i.slug, count: i.count, title: i.title || '', cat: i.cat || '' }));
 
-  for (const k of list.keys) {
-    const meta: any = k.metadata || {};
-    items.push({
-      slug: k.name.replace('views:', ''),
-      count: meta.count || 0,
-      title: meta.title || '',
-      cat: meta.cat || '',
-    });
-  }
-
-  items.sort((a, b) => b.count - a.count);
-
-  return new Response(JSON.stringify(items.slice(0, n)), {
+  return new Response(JSON.stringify(out), {
     headers: {
       'content-type': 'application/json',
-      'cache-control': 'public, max-age=120',
+      'cache-control': 'public, max-age=60',
     },
   });
 };
