@@ -39,7 +39,7 @@ const tags = post.data.tags ?? [];
 
           <div class="article-metabar">
             <div class="article-meta">
-              <span><i class="fa-solid fa-user"></i>{post.data.author ?? 'গাজিটাইম ডেস্ক'}</span>
+              <span><i class="fa-solid fa-user"></i>{post.data.author ?? 'গাজী টাইম ডেস্ক'}</span>
               <span><i class="fa-solid fa-calendar-days"></i>{bnDate(post.data.date)}</span>
               <span><i class="fa-solid fa-clock"></i>{readingTime(post.body)} মিনিট পড়া</span>
             </div>
@@ -62,7 +62,7 @@ const tags = post.data.tags ?? [];
             <Content />
           </div>
 
-          <p class="article-author">লেখক : {post.data.author ?? 'গাজিটাইম ডেস্ক'}</p>
+          <p class="article-author">লেখক : {post.data.author ?? 'গাজী টাইম ডেস্ক'}</p>
 
           {tags.length > 0 && (
             <div class="article-tags">
