@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import SectionHead from '../../components/SectionHead.astro';
 import { bnDate, catName, readingTime } from '../../lib/utils';
 
 export async function getStaticPaths() {
@@ -18,99 +17,95 @@ const all = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const related = all.filter((p) => p.id !== post.id && p.data.category === post.data.category).slice(0, 4);
-const more = all.filter((p) => p.id !== post.id && p.data.category !== post.data.category).slice(0, 4);
-const img = post.data.image ?? '/images/metro.jpg';
+const more = all
+  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
+  .slice(0, 4);
+const fill = all.filter((p) => p.id !== post.id && p.data.category !== post.data.category);
+const readMore = [...more, ...fill].slice(0, 4);
+
 const href = (p: any) => `/news/${p.id}/`;
-const mins = readingTime(post.body ?? '');
-const shareUrl = Astro.url.href;
+const img = (p: any) => p.data.image ?? '/images/city.jpg';
+const shareUrl = `https://gazitime.online/news/${post.id}/`;
+const tags = post.data.tags ?? [];
 ---
 
-<Base title={post.data.title} description={post.data.dek} image={img} type="article">
-  <div class="container article-wrap">
-    <div class="row gx-5">
-      <div class="col-lg-8 col-md-12">
-        <div class="article-head">
-          <a class="article-eyebrow" href={`/category/${post.data.category}/`}>{catName(post.data.category)}</a>
-          <h1>{post.data.title}</h1>
-          {post.data.dek && <p class="article-dek">{post.data.dek}</p>}
+<Base title={post.data.title} description={post.data.description} image={img(post)} type="article">
+  <section class="article-wrap">
+    <div class="container">
+      <div class="row gx-5">
+        <div class="col-lg-8">
+          <a class="article-eyebrow" href={`/category/${post.data.category}/`}>
+            {catName(post.data.category)}
+          </a>
 
-          <div class="article-meta">
-            <span><i class="fa-solid fa-user"></i>{post.data.author}</span>
-            <span><i class="fa-solid fa-calendar-days"></i>{bnDate(post.data.date)}</span>
-            <span><i class="fa-solid fa-clock"></i>{mins} মিনিট পড়া</span>
+          <h1 class="article-title">{post.data.title}</h1>
+
+          <div class="article-metabar">
+            <div class="article-meta">
+              <span><i class="fa-solid fa-user"></i>{post.data.author ?? 'গজিটাইম ডেস্ক'}</span>
+              <span><i class="fa-solid fa-calendar-days"></i>{bnDate(post.data.date)}</span>
+              <span><i class="fa-solid fa-clock"></i>{readingTime(post.body)} মিনিট পড়া</span>
+            </div>
+            <div class="article-share">
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href={`https://api.whatsapp.com/send?text=${post.data.title}%20${shareUrl}`} target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+              <a href={`https://twitter.com/intent/tweet?url=${shareUrl}`} target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href={`https://t.me/share/url?url=${shareUrl}`} target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+              <a href="#" class="js-print" aria-label="Print"><i class="fa-solid fa-print"></i></a>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
           </div>
 
-          <div class="article-share">
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.data.title + ' ' + shareUrl)}`} target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(post.data.title)}`} target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
-            <button type="button" class="copy-link" data-url={shareUrl} aria-label="Copy link"><i class="fa-solid fa-link"></i></button>
+          <figure class="article-figure">
+            <img src={img(post)} alt={post.data.title} width="832" height="468" />
+            {post.data.imageCaption && <figcaption>{post.data.imageCaption}</figcaption>}
+          </figure>
+
+          <div class="article-body details-content">
+            <Content />
           </div>
+
+          <p class="article-author">লেখক : {post.data.author ?? 'গজিটাইম ডেস্ক'}</p>
+
+          {tags.length > 0 && (
+            <div class="article-tags">
+              {tags.map((t) => (
+                <a href={`/search/?q=${encodeURIComponent(t)}`}>#{t}</a>
+              ))}
+            </div>
+          )}
         </div>
 
-        <figure class="article-figure">
-          <img src={img} alt={post.data.imageAlt ?? post.data.title} width="900" height="506" />
-          <figcaption>{post.data.imageAlt ?? post.data.title}</figcaption>
-        </figure>
-
-        <div class="details-content">
-          <Content />
-        </div>
-
-        {post.data.tags.length > 0 && (
-          <div class="article-tags">
-            {post.data.tags.map((t) => <span class="article-tag">{t}</span>)}
-          </div>
-        )}
-
-        <div class="article-related">
-          <SectionHead title="আরও পড়ুন" href={`/category/${post.data.category}/`} />
-          <div class="row">
-            {related.map((p) => (
-              <div class="col-lg-6 col-md-6 col-12 mb-4">
-                <div class="news-card border-0">
-                  <a href={href(p)}><img class="img-fluid" src={p.data.image ?? '/images/metro.jpg'} alt={p.data.title} width="300" height="169" /></a>
-                  <h3 class="fs-nd"><a href={href(p)}>{p.data.title}</a></h3>
-                  <small class="text-muted"><i class="fa-solid fa-clock"></i> {bnDate(p.data.date)}</small>
-                </div>
-              </div>
+        <aside class="col-lg-4">
+          <div class="article-side">
+            <div class="side-head">আরও পড়ুন</div>
+            {readMore.map((p) => (
+              <a class="side-post" href={href(p)}>
+                <span class="side-post__text">{p.data.title}</span>
+                <img src={img(p)} alt={p.data.title} width="110" height="68" loading="lazy" />
+              </a>
             ))}
+
+            <div class="ad-box ad-box--300x250"><span>বিজ্ঞাপন ৩০০ × ২৫০</span></div>
+
+            <div class="side-head mt-3">আরও দেখুন</div>
+            <div class="side-links">
+              <a href="/category/special/">বিশেষ প্রতিবেদন<i class="fa-solid fa-angle-right"></i></a>
+              <a href="/category/opinion/">মতামত<i class="fa-solid fa-angle-right"></i></a>
+              <a href="/category/national/">জাতীয় সংবাদ<i class="fa-solid fa-angle-right"></i></a>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-12">
-        <div class="article-side">
-          <div class="article-side-head">আরও পড়ুন</div>
-          {all.slice(0, 4).map((p) => (
-            <a class="article-side-item" href={href(p)}>
-              <h4>{p.data.title}</h4>
-              <img src={p.data.image ?? '/images/metro.jpg'} alt={p.data.title} width="100" height="66" />
-            </a>
-          ))}
-
-          <div class="ad-box ad-box--300x250 my-4">বিজ্ঞাপন ৩০০ × ২৫০</div>
-
-          <div class="article-side-head">আরও দেখুন</div>
-          <div class="article-side-links">
-            {more.slice(0, 3).map((p) => (
-              <a href={href(p)}>{p.data.title}<i class="fa-solid fa-angle-right"></i></a>
-            ))}
-          </div>
-        </div>
+        </aside>
       </div>
     </div>
-  </div>
-
-  <script is:inline>
-    document.querySelectorAll('.copy-link').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(btn.dataset.url);
-          btn.classList.add('copied');
-        } catch (e) {}
-      });
-    });
-  </script>
+  </section>
 </Base>
+
+<script>
+  document.querySelectorAll('.js-print').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.print();
+    });
+  });
+</script>

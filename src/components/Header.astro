@@ -83,9 +83,9 @@ const isActive = (href: string) =>
             <div class="carousel-inner hidden">
               {sliderPosts.map((p, i) => (
                 <div class={`carousel-item ${i === 0 ? 'active' : ''}`}>
-                  <a class="slider-image-text d-flex justify-content-end" href={`/news/${p.id}/`}>
-                    <h3>{p.data.title}</h3>
-                    {p.data.image && <img alt={p.data.imageAlt ?? p.data.title} width="300" height="250" class="d-block" style="width:130px;height:70px;object-fit:cover" src={p.data.image} />}
+                  <a class="slider-image-text" href={`/news/${p.id}/`} style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0">
+                    <h3 style="flex:1 1 auto;margin:0;font-size:14px;line-height:1.45;max-width:150px">{p.data.title}</h3>
+                    {p.data.image && <img alt={p.data.imageAlt ?? p.data.title} width="130" height="70" class="d-block" style="position:static !important;flex:0 0 130px;width:130px;height:70px;object-fit:cover" src={p.data.image} />}
                   </a>
                 </div>
               ))}
