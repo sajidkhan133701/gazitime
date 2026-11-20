@@ -839,3 +839,279 @@ html, body { overflow-x: clip; }
   .mobile-logo-bar { position: relative; z-index: 1; }
   .navbar-area .scrollable-menu { padding: 2px 0; }
 }
+
+
+/* ==========================================================================
+   DARK MODE — readable first: warm dark surfaces, soft ink, orange accent kept
+   ========================================================================== */
+[data-bs-theme="dark"] {
+  --dm-bg: #0e1013;
+  --dm-surface: #171a1f;
+  --dm-surface-2: #1e2228;
+  --dm-line: #2c323a;
+  --dm-ink: #e9ecef;
+  --dm-muted: #a7b0ba;
+  --dm-accent: #f68d23;
+}
+
+[data-bs-theme="dark"] body,
+[data-bs-theme="dark"] html {
+  background: var(--dm-bg) !important;
+  color: var(--dm-ink) !important;
+}
+
+/* ---------- masthead + nav ---------- */
+[data-bs-theme="dark"] .top-header,
+[data-bs-theme="dark"] .mobile-logo-bar {
+  background: var(--dm-bg) !important;
+  border-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .navbar-area {
+  background: var(--dm-surface) !important;
+  border-top: 1px solid var(--dm-line) !important;
+  border-bottom: 1px solid var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .navbar-area.is-stuck {
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .55);
+}
+[data-bs-theme="dark"] .scrollable-menu .nav-link,
+[data-bs-theme="dark"] .navbar-area a {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .scrollable-menu .nav-link:hover,
+[data-bs-theme="dark"] .scrollable-menu .nav-link.active {
+  color: var(--dm-accent) !important;
+}
+[data-bs-theme="dark"] .header-actions a,
+[data-bs-theme="dark"] .header-actions button,
+[data-bs-theme="dark"] .mobile-header-icons a,
+[data-bs-theme="dark"] .mobile-header-icons button {
+  color: var(--dm-ink) !important;
+  background: var(--dm-surface-2) !important;
+  border-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .date-text,
+[data-bs-theme="dark"] .top-header small,
+[data-bs-theme="dark"] .top-header a {
+  color: var(--dm-muted) !important;
+}
+
+/* ---------- section headers ---------- */
+[data-bs-theme="dark"] .news-title-more h2 a,
+[data-bs-theme="dark"] .news-title-more h2 {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .news-line {
+  border-color: #3a4149 !important;
+}
+[data-bs-theme="dark"] .more-link {
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .more-link:hover {
+  color: var(--dm-accent) !important;
+}
+
+/* ---------- cards + lists ---------- */
+[data-bs-theme="dark"] .news-card,
+[data-bs-theme="dark"] .news-card h3 a,
+[data-bs-theme="dark"] .news-card h4 a,
+[data-bs-theme="dark"] .news-card p,
+[data-bs-theme="dark"] .card-text,
+[data-bs-theme="dark"] .news-item h3 a,
+[data-bs-theme="dark"] .law-news-container .news-item h3 a,
+[data-bs-theme="dark"] .lead-card h2 a,
+[data-bs-theme="dark"] .mini-card h3 a {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .news-card {
+  border-bottom-color: var(--dm-accent);
+}
+[data-bs-theme="dark"] .text-muted,
+[data-bs-theme="dark"] small,
+[data-bs-theme="dark"] .listing-dek {
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .news-card.bg-light {
+  background: var(--dm-surface) !important;
+  border-color: var(--dm-line) !important;
+}
+
+/* ---------- chips ---------- */
+[data-bs-theme="dark"] .btn-tag,
+[data-bs-theme="dark"] .tag-scroll .btn-tag {
+  background-color: var(--dm-surface-2) !important;
+  border-color: #3a4149 !important;
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .btn-tag:hover {
+  background-color: #2a3037 !important;
+  border-color: #4a525c !important;
+  color: #fff !important;
+}
+
+/* ---------- sidebar tab card ---------- */
+[data-bs-theme="dark"] .tab-card {
+  background: var(--dm-surface) !important;
+  border-color: var(--dm-line) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+}
+[data-bs-theme="dark"] .tab-card__nav {
+  background: var(--dm-surface-2) !important;
+  border-bottom-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .tab-card__nav .nav-link {
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .tab-card__nav .nav-link.active {
+  color: var(--dm-accent) !important;
+}
+[data-bs-theme="dark"] .tab-row {
+  border-bottom-color: #2a3037 !important;
+}
+[data-bs-theme="dark"] .tab-title {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .tab-time {
+  background: #3a2a17 !important;
+  color: #ffb469 !important;
+}
+[data-bs-theme="dark"] .tab-more a {
+  color: var(--dm-ink) !important;
+  border-color: #3a4149 !important;
+}
+
+/* ---------- explainer + ads ---------- */
+[data-bs-theme="dark"] .explainer-card {
+  background: var(--dm-surface) !important;
+  border-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .explainer-card p a,
+[data-bs-theme="dark"] .explainer-card .p-3 {
+  color: var(--dm-ink) !important;
+  background: transparent !important;
+}
+[data-bs-theme="dark"] .ad-box {
+  background: #22262d !important;
+  border-color: #333a42 !important;
+  color: #8b949e !important;
+}
+
+/* ---------- article body ---------- */
+[data-bs-theme="dark"] .article-title,
+[data-bs-theme="dark"] .article-body,
+[data-bs-theme="dark"] .article-body p,
+[data-bs-theme="dark"] .article-body h2,
+[data-bs-theme="dark"] .article-body h3,
+[data-bs-theme="dark"] .article-author {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .article-body a {
+  color: #6ea8fe !important;
+}
+[data-bs-theme="dark"] .article-metabar {
+  border-bottom-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .article-share a {
+  background: var(--dm-surface-2) !important;
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .article-tags a {
+  color: var(--dm-muted) !important;
+  border-color: #3a4149 !important;
+}
+[data-bs-theme="dark"] .side-post,
+[data-bs-theme="dark"] .side-links a {
+  border-bottom-color: #2a3037 !important;
+}
+[data-bs-theme="dark"] .side-post__text,
+[data-bs-theme="dark"] .side-links a,
+[data-bs-theme="dark"] .side-head {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .side-post:hover {
+  background: #1b1f25 !important;
+}
+[data-bs-theme="dark"] .news-source {
+  color: var(--dm-muted) !important;
+  border-top-color: var(--dm-line) !important;
+}
+
+/* ---------- listing / pagination / latest ---------- */
+[data-bs-theme="dark"] .listing-row {
+  border-bottom-color: #2a3037 !important;
+}
+[data-bs-theme="dark"] .listing-row h3 a,
+[data-bs-theme="dark"] .listing-head h1 {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .latest-day {
+  color: var(--dm-ink) !important;
+  border-bottom-color: var(--dm-accent) !important;
+}
+[data-bs-theme="dark"] .page-btn {
+  color: var(--dm-ink) !important;
+  border-color: #3a4149 !important;
+  background: var(--dm-surface) !important;
+}
+[data-bs-theme="dark"] .page-btn:hover {
+  background: #2a3037 !important;
+  color: var(--dm-accent) !important;
+}
+[data-bs-theme="dark"] .page-count {
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .cat-strip a {
+  color: var(--dm-muted) !important;
+}
+[data-bs-theme="dark"] .cat-strip a:hover {
+  color: var(--dm-accent) !important;
+}
+
+/* ---------- read-more accordion ---------- */
+[data-bs-theme="dark"] .read-more-block {
+  background: var(--dm-surface) !important;
+  border-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .read-more-head {
+  background: var(--dm-surface-2) !important;
+  color: var(--dm-ink) !important;
+  border-bottom-color: var(--dm-line) !important;
+}
+[data-bs-theme="dark"] .read-more-block a {
+  color: var(--dm-ink) !important;
+  border-bottom-color: #2a3037 !important;
+}
+
+/* ---------- footer ---------- */
+[data-bs-theme="dark"] footer {
+  background: #12151a !important;
+  color: var(--dm-ink) !important;
+  border-top: 1px solid var(--dm-line);
+}
+[data-bs-theme="dark"] footer a,
+[data-bs-theme="dark"] footer p,
+[data-bs-theme="dark"] footer div,
+[data-bs-theme="dark"] footer span {
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .copyright-text,
+[data-bs-theme="dark"] footer ul li a {
+  color: var(--dm-muted) !important;
+}
+
+/* ---------- forms ---------- */
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .form-control {
+  background-color: var(--dm-surface-2) !important;
+  border-color: #3a4149 !important;
+  color: var(--dm-ink) !important;
+}
+[data-bs-theme="dark"] .search-box input {
+  background: var(--dm-surface-2) !important;
+  color: var(--dm-ink) !important;
+  border-color: #3a4149 !important;
+}
+
+/* images keep their own colour */
+[data-bs-theme="dark"] img { opacity: .96; }
