@@ -1,4 +1,4 @@
----
+﻿---
 import { getCollection } from 'astro:content';
 import site from '../data/site.json';
 import categories from '../data/categories.json';
@@ -59,7 +59,7 @@ const isActive = (href: string) =>
     <div class="row justify-content-between">
       <div class="col-lg-3 d-flex flex-column justify-content-end">
         <div class="top-dates">
-          <div class="date-text"><i class="bi bi-calendar3"></i> {today}</div>
+          <div class="date-text"><i class="bi bi-calendar3"></i> <span id="bz-date">{today}</span></div>
           <div class="quick-links">
             <a href="/archive/">ই-পেপার</a> |<a href="/archive/"> আর্কাইভ</a>
           </div>
@@ -201,4 +201,23 @@ const isActive = (href: string) =>
       syncIcons();
     });
   });
+</script>
+
+<script is:inline>
+  (function () {
+    var wd = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+    var mo = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    var bn = '০১২৩৪৫৬৭৮৯';
+    function dg(n) { return String(n).replace(/\d/g, function (x) { return bn[+x]; }); }
+    function render() {
+      var t = new Date(Date.now() + 6 * 60 * 60 * 1000);
+      var s = wd[t.getUTCDay()] + ', ' + dg(t.getUTCDate()) + ' ' + mo[t.getUTCMonth()] + ', ' + dg(t.getUTCFullYear());
+      var el = document.getElementById('bz-date');
+      if (el) el.textContent = s;
+      var cp = document.getElementById('bz-copy');
+      if (cp) cp.textContent = cp.textContent.replace(/[০-৯]{4}/, dg(t.getUTCFullYear()));
+    }
+    render();
+    setInterval(render, 60000);
+  })();
 </script>
